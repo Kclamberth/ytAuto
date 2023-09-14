@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cd ~/Videos/ElizaASMR
-yt-dlp $(cat ~/Pictures/channels.txt) | grep 'has already been downloaded' >> /dev/null 2>&1
+cd ~/Videos/videodirectory
+yt-dlp $(cat ~/Videos/channels.txt) | grep 'has already been downloaded' >> /dev/null 2>&1
 e1=$?
 
 if [ $e1 -ne 0 ]
