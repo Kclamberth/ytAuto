@@ -27,7 +27,7 @@ do
 	counter=$(expr $counter + 1)
 done
 
-e4=$(exp $(ls -l | wc -l) - 1) #number of items in dir (not counting total line)
+e4=$(expr $(ls -l | wc -l) - 1) #number of items in dir (not counting total line)
 cat lastupdated.txt | tail -$e4 #prints out what changed since the script last ran
 
 
