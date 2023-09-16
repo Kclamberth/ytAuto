@@ -1,1 +1,1 @@
-LEAVE BLANK , WILL AUTO UPDATE WITH INFO IF NEW VIDEO DOWNLOADS
+Autofills with info relating to a new video downloading as of current date of script running.
