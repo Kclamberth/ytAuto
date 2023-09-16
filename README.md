@@ -6,8 +6,8 @@ It uses the channels.txt file to store channel links that you have added to it.
 
 Duplicates are prevented via the archive.txt that is created in each shows directory.
 
-NOTE:
-To use this script you need to:
+**NOTE:
+To use this script you need to:**
 
 1.) Put copy.sh & channels.txt in your jellyfin directory.
 
