@@ -13,5 +13,5 @@ To use this script you need to:
 
 2.) Add youtube channel links to the channels.txt file.
 
-A lastupdated.txt file will be created in the directory. 
+A lastupdated.txt file will be created in the jellyfin directory. 
 You can use it as a log file as to when your last download was.
