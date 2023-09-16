@@ -9,23 +9,23 @@ do
     e1=$(ls -l | wc -l) #counts number of items in directory BEFORE yt-dlp runs
 
     if [ -s "$e0/channels.txt" ]
-        then
-            #downloads everything on a youtube channel that is NOT already in the archive.txt 
-	    yt-dlp $(cat $e0/channels.txt | sort | sed -n "$counter"p) --download-archive archive.txt
+    then
+        #downloads everything on a youtube channel that is NOT already in the archive.txt 
+        yt-dlp $(cat $e0/channels.txt | sort | sed -n "$counter"p) --download-archive archive.txt
 
-	    e2=$(ls -l | wc -l) #counts number of items in directory AFTER yt-dlp runs
+        e2=$(ls -l | wc -l) #counts number of items in directory AFTER yt-dlp runs
 
-	    #grabs the first video in the folder and stores it's name in a variable
-	    e3=$(ls -lt | grep webm | head -n 1 | awk -F " " '{ for (i=9; i<=NF; i++) print $i }' | paste -s -d " ")
+        #grabs the first video in the folder and stores it's name in a variable
+        e3=$(ls -lt | grep webm | head -n 1 | awk -F " " '{ for (i=9; i<=NF; i++) print $i }' | paste -s -d " ")
 
-	    cd $e0 #return to copy.sh directory
+        cd $e0 #return to copy.sh directory
 
-	    if [ $e2 -gt $e1 ] #if items in directory grew after yt-dlp runs
-	    then
-    	        echo "$e3 downloaded on $(date) in $dir"  >> lastupdated.txt
-	    else
-    	        echo "No new videos as of $(date) in $dir" >> lastupdated.txt
-	    fi
+        if [ $e2 -gt $e1 ] #if items in directory grew after yt-dlp runs
+	then
+    	    echo "$e3 downloaded on $(date) in $dir"  >> lastupdated.txt
+	else
+    	    echo "No new videos as of $(date) in $dir" >> lastupdated.txt
+        fi
     else
         echo "channels.txt is empty or does not exist."
     fi
