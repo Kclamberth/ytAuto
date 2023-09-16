@@ -8,7 +8,9 @@ Duplicates are prevented via the archive.txt that is created in each shows direc
 
 NOTE:
 To use this script you need to:
+
 1.) Put copy.sh & channels.txt in your jellyfin directory.
+
 2.) Add youtube channel links to the channels.txt file.
 
 A lastupdated.txt file will be created in the directory. 
