@@ -1,1 +1,0 @@
-Autofills with info relating to a new video downloading as of current date of script running.
