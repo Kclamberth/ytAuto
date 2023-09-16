@@ -35,6 +35,7 @@ do
 done
 
 e4=$(cat $e0/channels.txt | wc -l) #number of items in dir (not counting total line)
+echo " "
 cat lastupdated.txt | tail -$e4 #prints out what changed for each item in channels.txt
 
 
