@@ -1,4 +1,4 @@
 PUT YOUTUBE CHANNEL LINKS HERE EX:
-https://www.youtubechannel1.com
-https://www.youtubechannel2.com
-https://www.youtubechannel1.com
+https://www.youtubechannel.com/@Channel-1
+https://www.youtubechannel.com/@Channel-2
+https://www.youtubechannel.com/@Channel-3
