@@ -1,8 +1,6 @@
 #!/bin/bash
 
 counter=1
-#e0=$(find / -name channels.txt 2>/dev/null | xargs dirname 2>/dev/null) #find channel.txt
-#cd $e0
 
 if [ -s channels.txt ]
 then
@@ -81,21 +79,21 @@ then
 
 	            cd $e0 #return to copy.sh directory
 
-	            if [ $e2 -gt $e1 ] #if items in directory grew after yt-dlp runs
-	            then
-	    	        echo $e3 downloaded on $(date) in $dir >> $e0/youtube/lastupdated.txt
-		    else
-	    	        echo "No new videos as of $(date) in $dir" >> $e0/youtube/lastupdated.txt
-	            fi
 		counter=$(expr $counter + 1)
 
 		fi
+                    if [ $e2 -gt $e1 ] #if items in directory grew after yt-dlp runs
+                    then
+                        echo $e3 downloaded on $(date) in $dir >> $e0/lastupdated.txt
+                    else
+                        echo "No new videos as of $(date) in $dir" >> $e0/lastupdated.txt
+                    fi
 
 	    done
 
 	    e4=$(cat $e0/channels.txt | wc -l) #number of items in dir (not counting total line)
 	    echo " "
-	    cat $e0/youtube/lastupdated.txt | tail -$e4 #prints out what changed for each item in channels.txt
+	    cat $e0/lastupdated.txt | tail -$e4 #prints out what changed for each item in channels.txt
 
 	fi
 else
