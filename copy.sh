@@ -1,8 +1,9 @@
 #!/bin/bash
 
 counter=1
+cd ~/Documents
 
-if [ -s $(find / -name channels.txt 2>/dev/null) ]
+if [ -s channels.txt ]
 then
 	if [ ! $(find / -type d -iname youtube 2>/dev/null) ]   #if youtube directory DOES NOT exist, create youtube folder & subdirectories based off channels.txt
         then
@@ -101,10 +102,9 @@ else
 	echo "Creating channels.txt..."
 	echo " "
 	sleep 2
-	if [ -f $(find / -name channels.txt 2>/dev/null) ]
+	if [ -f channels.txt ]
 	then
-	    e10=$(find / -name channels.txt 2>/dev/null)
-	    echo "channels.txt already exists in $e10 but is empty."
+	    echo "channels.txt already exists but is empty."
 	else
 	    touch channels.txt
 	fi
