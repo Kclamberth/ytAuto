@@ -1,7 +1,7 @@
 #!/bin/bash
 
 counter=1
-cd ~/Documents #CHANGE THIS TO THE PATH OF YOUR COPY.SH 
+cd $(find / -name copy.sh 2>/dev/null | xargs dirname 2>dev/null)
 
 if [ -s channels.txt ]
 then
