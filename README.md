@@ -26,5 +26,4 @@ If you wish to add more options to your yt-dlp download such as descriptions, me
 
 **yt-dlp $(cat $e0/channels.txt | sort | sed -n "$counter"p) --download-archive archive.txt** in **line 75** of the script.
 
----------------------------------------------------------------------------------------------------------------------------------
 
