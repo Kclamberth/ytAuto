@@ -17,6 +17,7 @@ yt-dlp will then download all the videos that the link contains, and add them to
 
 **NOTE:**
 If you wish to add more options to your yt-dlp download such as descriptions, metadata, etc then you need to modify this line!
+
 **yt-dlp $(cat $e0/channels.txt | sort | sed -n "$counter"p) --download-archive archive.txt** in **line 75** of the script.
 
 If you add more links to the channels.txt at a later date, more subdirectories will automatically be created for you based off of the channel names. 
