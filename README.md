@@ -6,7 +6,7 @@ To use this script you need to download copy.sh and put it wherever you want.
 For use in jellyfin, I have the script in the parent directory of shows.
 (EX: /data/jellyfin/shows contains the shows I watch, so the script is located in /data/jellyfin)
 
-The first time you run this script, it will create a channels.txt file for you in the same directory as itself (for me that is in /data/jellyfin.
+The first time you run this script, it will create a channels.txt file for you in the same directory as itself (for me that is in /data/jellyfin).
 You simply add youtube channel links to this file in the **"https://www.youtube.com/@exampleone"** format. The simplified format with @ is important.
 
 Once you add channel links to the channel.txt file, the next time you run the script it will automatically create a youtube directory in the 
