@@ -11,7 +11,7 @@ You simply add youtube channel links to this file in the **"https://www.youtube.
 
 Once you add channel links to the channel.txt file, the next time you run the script it will automatically create a youtube directory in the 
 jellyfin directory, and then it will create subdirectories based off the channel link names. 
-(EX: https://www.youtube.com/@exampleone creates a subdirectory called exampleone in the /data/jellyfin/youtube directory.)
+(EX: https://www.youtube.com/@exampleone creates a subdirectory called /data/jellyfin/youtube/exampleone in the /data/jellyfin/youtube directory.)
 
 yt-dlp will then download all the videos that the link contains, and add them to the their specific subdirectories.
 
