@@ -15,6 +15,8 @@ jellyfin directory, and then it will create subdirectories based off the channel
 
 yt-dlp will then download all the videos that the link contains, and add them to the their specific subdirectories.
 
+A lastupdated.txt file will be created in the /data/jellyfin directory that you can read to view when the last time a video was downloaded from that channel.
+
 If you add more links to the channels.txt at a later date, more subdirectories will automatically be created for you based off of the channel names,
 so you simply need to run the script again or just let it run again via a cronjob (my preferred method).
 
