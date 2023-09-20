@@ -20,6 +20,8 @@ A lastupdated.txt file will be created in the /data/jellyfin directory that you 
 If you add more links to the channels.txt at a later date, more subdirectories will automatically be created for you based off of the channel names,
 so you simply need to run the script again or just let it run again via a cronjob (my preferred method).
 
+**To delete any channels:** simply remove the link from the channels.txt file, and delete the directory of the channel in "/data/jellyfin/youtube".
+
 **NOTE:**
 ---------------------------------------------------------------------------------------------------------------------------------
 If you wish to add more options to your yt-dlp download such as descriptions, metadata, etc then you need to modify this line!
