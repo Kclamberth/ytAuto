@@ -5,7 +5,7 @@ cd $(find / -name copy.sh 2>/dev/null | xargs dirname 2>/dev/null)
 
 if [ -s channels.txt ]
 then
-	if [ ! $(find / -type d -iname youtube 2>/dev/null) ]   #if youtube directory DOES NOT exist, create youtube folder & subdirectories based off channels.txt
+	if [ ! $(find / -type d -iname youtube 2>/dev/null | tail -1) ]   #if youtube directory DOES NOT exist, create youtube folder & subdirectories based off channels.txt
         then
 	    mkdir youtube
 	    e0=$(find / -name channels.txt 2>/dev/null | xargs dirname 2>/dev/null) #find channel.txt
