@@ -1,41 +1,115 @@
 #!/bin/bash
 
 counter=1
-e0=$(pwd) #store copy.sh directory
+#e0=$(find / -name channels.txt 2>/dev/null | xargs dirname 2>/dev/null) #find channel.txt
+#cd $e0
 
-for dir in $e0/shows/*
-do
-    cd $dir #cd into specific channel folder
-    e1=$(ls -l | wc -l) #counts number of items in directory BEFORE yt-dlp runs
+if [ -s channels.txt ]
+then
+	if [ ! $(find / -type d -iname shows 2>/dev/null) ]   #if show directory DOES NOT exist, create show folder & subdirectories based off channels.txt
+        then
+	    mkdir shows
+	    e0=$(find / -name channels.txt 2>/dev/null | xargs dirname 2>/dev/null) #find channel.txt
+	    cd $e0
 
-    if [ -s "$e0/channels.txt" ]
-    then
-        #downloads everything on a youtube channel that is NOT already in the archive.txt
-        yt-dlp $(cat $e0/channels.txt | sort | sed -n "$counter"p) --download-archive archive.txt
+	    echo "No show directory found or no channel folders found in $e0/shows"
+            echo "Creating show subdirectories based off of youtube links in the channels.txt file..."
+            if [ -s $e0/channels.txt ]
+	    then
+	        e5=$(cat channels.txt | sort | wc -l)
+	    else
+		echo "channels.txt is empty, please add links to it to continue." | exit
+	    fi
 
-        e2=$(ls -l | wc -l) #counts number of items in directory AFTER yt-dlp runs
+	    sleep 3
 
-        #grabs the first video in the folder and stores it's name in a variable
-        e3=$(ls -lt | grep --invert-match ".txt" | sed -n 2p | awk -F " " '{ for (i=9; i<=NF; i++) print $i }' | paste -s -d " ")
+            for ((link = 1; link <= "$e5"; link ++))
+            do
+                e6=$(cat channels.txt | sort | awk -F "@" '{print $2}' | sed -n "$link"p)
+                mkdir -p "$(pwd)/shows/$e6"
+                echo "$(pwd)/shows/$e6 has been created"
+            done
 
-        cd $e0 #return to copy.sh directory
+	echo " "
+	sleep 5
 
-        if [ $e2 -gt $e1 ] #if items in directory grew after yt-dlp runs
+
+	fi
+
+	if [ -d shows ] # if show directory does exist, continue
 	then
-    	    echo $e3 downloaded on $(date) in $dir >> lastupdated.txt
+	    e0=$(find / -name channels.txt 2>/dev/null | xargs dirname 2>/dev/null) #find channel.txt
+	    e8=$(cat $e0/channels.txt | wc -l)
+	    e9=$(ls -d $e0/shows/* | grep -v .txt | wc -l)
+	    if [ $e8 -gt $e9 ]
+	    then
+		echo "More channel links found than show subdirectories exist."
+		echo "Creating show subdirectories based off of youtube links in the channels.txt file..."
+		echo " "
+		sleep 2
+		e5=$(cat channels.txt | sort | wc -l)
+		for ((link = 1; link <= "$e5"; link ++))
+            	do
+                    e6=$(cat channels.txt | sort | awk -F "@" '{print $2}' | sed -n "$link"p)
+                    if [ -d $e0/shows/$e6 ]
+		    then
+			sleep 1
+		    else
+		        mkdir -p "$(pwd)/shows/$e6"
+                        echo "$(pwd)/shows/$e6 has been created"
+		    fi
+                done
+	    echo " "
+	    fi
+
+
+	    #download channel contents into each subdirectory of shows
+    	    for dir in $e0/shows/*
+	    do
+	        if [ -d $dir ]
+		then
+		    cd $dir #cd into specific channel folder
+	            e1=$(ls -l | wc -l) #counts number of items in directory BEFORE yt-dlp runs
+
+	            #downloads everything on a youtube channel that is NOT already in the archive.txt
+	            yt-dlp $(cat $e0/channels.txt | sort | sed -n "$counter"p) --download-archive archive.txt
+
+	            e2=$(ls -l | wc -l) #counts number of items in directory AFTER yt-dlp runs
+
+	            #grabs the first video in the folder and stores it's name in a variable
+	            e3=$(ls -lt | grep --invert-match ".txt" | sed -n 2p | awk -F " " '{ for (i=9; i<=NF; i++) print $i }' | paste -s -d " ")
+
+	            cd $e0 #return to copy.sh directory
+
+	            if [ $e2 -gt $e1 ] #if items in directory grew after yt-dlp runs
+	            then
+	    	        echo $e3 downloaded on $(date) in $dir >> $e0/shows/lastupdated.txt
+		    else
+	    	        echo "No new videos as of $(date) in $dir" >> $e0/shows/lastupdated.txt
+	            fi
+		counter=$(expr $counter + 1)
+
+		fi
+
+	    done
+
+	    e4=$(cat $e0/channels.txt | wc -l) #number of items in dir (not counting total line)
+	    echo " "
+	    cat $e0/shows/lastupdated.txt | tail -$e4 #prints out what changed for each item in channels.txt
+
+	fi
+else
+	echo "Channels.txt is empty or does not exist."
+	echo "Creating channels.txt..."
+	echo " "
+	sleep 2
+	if [ -f channels.txt ]
+	then
+	    echo "channels.txt already exists but is empty."
 	else
-    	    echo "No new videos as of $(date) in $dir" >> lastupdated.txt
-        fi
-    else
-        echo "channels.txt is empty or does not exist."
-    fi
-
-    counter=$(expr $counter + 1)
-
-done
-
-e4=$(cat $e0/channels.txt | wc -l) #number of items in dir (not counting total line)
-echo " "
-cat lastupdated.txt | tail -$e4 #prints out what changed for each item in channels.txt
-
-
+	    touch channels.txt
+	fi
+	e0=$(find / -name channels.txt 2>/dev/null | xargs dirname 2>/dev/null) #find channel.txt
+	cd $e0
+	echo "Ensure you populate channels.txt with links to youtube channels."
+fi
