@@ -5,6 +5,7 @@ This is a simple script for use in cron jobs and to automate the task of downloa
 To use this script you need to download copy.sh and put it wherever you want.
 For use in jellyfin, I have the script in the parent directory of shows.
 (EX: /data/jellyfin/shows contains the shows I watch, so the script is located in /data/jellyfin)
+
 **The first time you run this script, you need to run it from the directory you intend the youtube directory be (EX. I ran it from /data/jellyfin the first time)**
 
 The first time you run this script, it will create a channels.txt file for you in the same directory as itself (for me that is in /data/jellyfin).
