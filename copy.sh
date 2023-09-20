@@ -1,7 +1,7 @@
 #!/bin/bash
 
 counter=1
-cd ~/Documents
+cd ~/Documents #CHANGE THIS TO THE PATH OF YOUR COPY.SH 
 
 if [ -s channels.txt ]
 then
