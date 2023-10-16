@@ -24,9 +24,11 @@ so you simply need to run the script again or just let it run again via a cronjo
 
 **INSTALLATION:**
 -----------------------------------------------------------------------------------------------------------
-wget "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/copy.sh"
+1.) wget "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/copy.sh"
 
-sudo chmod +x /path/to/copy.sh
+2.) sudo chmod +x /path/to/copy.sh
+
+3.) Simply run the script via ./copy.sh
 
 **NOTE:**
 ---------------------------------------------------------------------------------------------------------------------------------
