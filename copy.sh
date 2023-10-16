@@ -103,16 +103,18 @@ then
         if [ $e2 -gt $e1 ] #if items in directory grew after yt-dlp runs
         then
             echo $e3 downloaded on $(date) in $dir >> $e0/lastupdated.txt
+            sed -i '/channels.txt/d' lastupdated.txt
+            sed -i '/^$/d' lastupdated.txt 
         else
             echo "No new videos as of $(date) in $dir" >> $e0/lastupdated.txt
+            sed -i '/channels.txt/d' lastupdated.txt
+            sed -i '/^$/d' lastupdated.txt 
         fi
 
     done
 
 	    e4=$(cat $e0/channels.txt | wc -l) #number of items in dir (not counting total line)
 	    echo " "
-        sed -i '/channels.txt/d' lastupdated.txt
-        sed -i '/^$/d' lastupdated.txt
 	    cat $e0/lastupdated.txt | tail -$e4 #prints out what changed for each item in channels.txt
 
 	fi
