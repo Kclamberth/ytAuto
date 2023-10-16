@@ -36,12 +36,12 @@ then
         done
 
 	echo " "
-    echo "Beginning download of youtube channels into respective directories..."
+        echo "Beginning download of youtube channels into respective directories..."
 	sleep 5
 
-    #call main script again
-    cd $copyLocation
-    ./copy.sh
+        #call main script again
+        cd $copyLocation
+        ./copy.sh
 
 	fi
 
@@ -75,6 +75,10 @@ then
             done
 
 	    echo " "
+            #call main script again
+   	    cd $copyLocation
+            ./copy.sh
+
 	fi
 
 
