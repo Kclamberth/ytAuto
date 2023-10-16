@@ -31,8 +31,8 @@ then
         for ((link = 1; link <= "$e5"; link ++))
         do
             e6=$(cat channels.txt | sort | awk -F "@" '{print $2}' | sed -n "$link"p)
-            mkdir -p "$(pwd)/$e6"
-            echo "$(pwd)/$e6 has been created"
+            mkdir -p "$e0/$e6"
+            echo "$e0/$e6 has been created"
         done
 
 	echo " "
@@ -65,17 +65,16 @@ then
 		    for ((link = 1; link <= "$e5"; link ++))
             do
                 e6=$(cat $e0/channels.txt | sort | awk -F "@" '{print $2}' | sed -n "$link"p)
-                if [ -d $e0/youtube/$e6 ]
+                if [ -d $e0/$e6 ]
 		        then
 			        sleep 1
 		        else
-		            mkdir -p "$(pwd)/$e6"
-                    echo "$(pwd)/$e6 has been created"
+		            mkdir -p "$e0/$e6"
+                    echo "$e0/$e6 has been created"
 		        fi
             done
      
 	    echo " "
-
 	fi
 
 
