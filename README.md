@@ -22,6 +22,11 @@ so you simply need to run the script again or just let it run again via a cronjo
 
 **To delete any channels:** simply remove the link from the channels.txt file, and delete the directory of the channel in "/data/jellyfin/youtube".
 
+**INSTALLATION:**
+-----------------------------------------------------------------------------------------------------------
+wget "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/copy.sh"
+sudo chmod +X /path/to/copy.sh
+
 **NOTE:**
 ---------------------------------------------------------------------------------------------------------------------------------
 If you wish to add more options to your yt-dlp download such as descriptions, metadata, etc then you need to modify this line!
