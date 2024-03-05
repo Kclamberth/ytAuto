@@ -73,7 +73,7 @@ then
                     echo "$e0/$e6 has been created"
 		        fi
             done
-     
+
 	    echo " "
 	fi
 
@@ -94,18 +94,18 @@ then
                 #grabs the first video in the folder and stores it's name in a variable
                 e3=$(ls -lt | grep --invert-match ".txt" | sed -n 2p | awk -F " " '{ for (i=9; i<=NF; i++) print $i }' | paste -s -d " ")
 
+		if [ $e2 -gt $e1 ] #if items in directory grew after yt-dlp runs
+		then
+		    echo $e3 downloaded on $(date) in $dir >> $e0/lastupdated.txt
+		else
+		    echo "No new videos as of $(date) in $dir" >> $e0/lastupdated.txt
+		fi
+
                 cd $e0 #return to copy.sh directory
 
                 counter=$(expr $counter + 1)
 
-        fi
-
-        if [ $e2 -gt $e1 ] #if items in directory grew after yt-dlp runs
-        then
-            echo $e3 downloaded on $(date) in $dir >> $e0/lastupdated.txt
-        else
-            echo "No new videos as of $(date) in $dir" >> $e0/lastupdated.txt
-        fi
+	fi
 
     done
 
@@ -113,8 +113,9 @@ then
 	    echo " "
         if [ -f $e0/lastupdated.txt ]; then
             sed -i '/channels.txt/d' lastupdated.txt
-            sed -i '/^$/d' lastupdated.txt 
-	        cat $e0/lastupdated.txt | tail -$e4 #prints out what changed for each item in channels.txt
+            sed -i '/^$/d' lastupdated.txt
+	    #push notification to discord
+	    /usr/bin/bash /media/discordbot.sh
         fi
 
 	fi
