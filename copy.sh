@@ -87,7 +87,7 @@ then
                 e1=$(ls -l | wc -l) #counts number of items in directory BEFORE yt-dlp runs
 
                 #downloads everything on a youtube channel that is NOT already in the archive.txt
-                yt-dlp $(cat $e0/channels.txt | sort | sed -n "$counter"p) --download-archive archive.txt
+                yt-dlp $(cat $e0/channels.txt | sort | sed -n "$counter"p) --embed-chapters --embed-metadata --download-archive archive.txt
 
                 e2=$(ls -l | wc -l) #counts number of items in directory AFTER yt-dlp runs
 
