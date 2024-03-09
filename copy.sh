@@ -39,9 +39,9 @@ while IFS= read -r line; do
     afterDownload=$(ls -A | wc -l)
 
     if [ "$afterDownload" -gt "$beforeDownload" ]; then
-        echo "New content downloaded for ${channelName} on $(date '+%b %d %Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
+        echo "New content downloaded for ${channelName} on $(date '+%b-%d-%Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
     else
-        echo "No new videos for ${channelName} as of $(date '+%b %d %Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
+        echo "No new videos for ${channelName} as of $(date '+%b-%d-%Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
     fi
 
     ((counter++))
