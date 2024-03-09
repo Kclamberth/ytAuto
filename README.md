@@ -34,7 +34,9 @@ so you simply need to run the script again or just let it run again via a cronjo
 
 2.) sudo chmod +x /path/to/copy.sh
 
-3.) Simply run the script via ./copy.sh
+3.) (OPTIONAL) Download discorbot.sh, and add your server's webhook url for use in notifications.
+
+4.) Simply run the script via ./copy.sh
 
 **NOTE:**
 ---------------------------------------------------------------------------------------------------------------------------------
