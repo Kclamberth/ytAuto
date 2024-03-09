@@ -21,7 +21,7 @@ Once you add channel links to the channel.txt file, the next time you run the sc
 (EX: https://www.youtube.com/@exampleone creates a subdirectory called /media/youtube/exampleone in the /media/youtube directory.)
 
 **This script will move channels.txt into the youtube directory, and it will create a lastupdated.txt in the youtube directory as well.**
-The channels.txt is used to pull data from when you add links to it. The lastupdated.txt file will serve as a log of when your script last pulled videos from youtube. Yt-dlp will then download all the videos that the link contains, and add them to the their specific subdirectories.
+The channels.txt is used to pull data from when you add links to it. The lastupdated.txt file will serve as a log of when your script last pulled videos from youtube. Yt-dlp will then download all the videos that the link contains, and add them to the their respective subdirectories.
 
 If you add more links to the channels.txt at a later date, more subdirectories will automatically be created for you based off of the channel names,
 so you simply need to run the script again or just let it run again via a cronjob (my preferred method).
