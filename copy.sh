@@ -17,6 +17,9 @@ if [ -s "${baseDir}/channels.txt" ]; then
 fi
 
 # Read channel links from channels.txt and create subdirectories
+# IFS= lets "read" read the entire line, whitespaces included.
+# -r lets "read" read backslashes, useful for URLs
+# stores it in variable line for processing
 while IFS= read -r line; do
     channelName=$(echo "$line" | awk -F "@" '{print $2}')
     mkdir -p "${youtubeDir}/${channelName}"
