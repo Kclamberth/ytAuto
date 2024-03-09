@@ -8,6 +8,8 @@ For use in jellyfin, I have the script in the parent directory of shows.
 
 **The first time you run this script, you need to run it from the directory you intend the youtube directory to be (EX. I ran it from /media the first time), this is because all the subdirectories will be created in that directory!**
 
+--------------------------------------------------------------------------------------------------------------------------------
+#HOW IT WORKS: 
 The first time you run this script, it will create a channels.txt file for you in the same directory as itself (for me that is in /media).
 You simply add youtube channel links to this file in the **"https://www.youtube.com/@exampleone"** format. The simplified format with @ is important.
 
