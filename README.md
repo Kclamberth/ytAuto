@@ -42,6 +42,6 @@ so you simply need to run the script again or just let it run again via a cronjo
 ---------------------------------------------------------------------------------------------------------------------------------
 If you wish to add more options to your yt-dlp download such as descriptions, metadata, etc then you need to modify this line!
 
-**yt-dlp $(cat $e0/channels.txt | sort | sed -n "$counter"p) --download-archive archive.txt** in **line 74** of the script.
+**yt-dlp "$line" --embed-chapters --embed-metadata --download-archive archive.txt** in **line 38** of the script.
 
 
