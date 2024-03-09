@@ -1,5 +1,5 @@
 # yt-dlp-auto-updater
-This is a simple script for use in cron jobs and to automate the task of downloading youtube videos via yt-dlp. 
+This is a simple script for use in cron jobs to automate the task of downloading youtube videos via yt-dlp. 
 
 **NOTE:**
 To use this script you need to download copy.sh and put it wherever you want.
