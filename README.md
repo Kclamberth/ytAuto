@@ -54,7 +54,9 @@ By using the optional `discordbot.sh` script, you can receive updates via Discor
 -----------------------------------------------------------------------------------------------------------
 1.) `wget "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/install.sh" && chmod +x install.sh`
 
-4.) Follow the instructions of the install.sh or copy.sh if you run it immediately afterwards.
+2.) Simply run the install script via `./install.sh`.
+
+3.) Follow the instructions of the install.sh or copy.sh if you run it immediately afterwards.
 
 **NOTE:**
 ---------------------------------------------------------------------------------------------------------------------------------
