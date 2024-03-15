@@ -47,6 +47,8 @@ By using the optional `discordbot.sh` script, you can receive updates via Discor
 2.) ffmpeg
 
 3.) jq
+
+4.) curl
   
 **INSTALLATION:**
 -----------------------------------------------------------------------------------------------------------
