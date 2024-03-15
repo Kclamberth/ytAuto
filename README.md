@@ -18,21 +18,27 @@ For use in jellyfin, I have the script in the parent directory of shows.
 
 * Added code blocks and reworded notifications for clarity in copy.sh and discordbot.sh.
 
-**HOW IT WORKS:**
---------------------------------------------------------------------------------------------------------------------------------
-The first time you run this script, it will create a channels.txt file for you in the same youtube directory it creates (for me that is in /media/youtube).
-You simply add youtube channel links to this file in the **"https://www.youtube.com/@exampleone"** format. The simplified format with @ is important.
+## How it Works
 
-Once you add channel links to the channel.txt file, the next time you run the script it will automatically create subdirectories based off the channel link names. 
-(EX: https://www.youtube.com/@exampleone creates a subdirectory called /media/youtube/exampleone in the /media/youtube directory.)
+When you run the `copy.sh` script for the first time, it accomplishes several key tasks to set up your YouTube content archiving system:
 
-**This script will move channels.txt into the youtube directory, and it will create a lastupdated.txt in the youtube directory as well.**
-The channels.txt is used to pull data from when you add links to it. The lastupdated.txt file will serve as a log of when your script last pulled videos from youtube. Yt-dlp will then download all the videos that the link contains, and add them to the their respective subdirectories.
+- **Directory and File Setup**: The script automatically creates a `youtube` directory in a specified base location (e.g., `/media/youtube`). Inside this directory, it initializes a `channels.txt` file.
 
-If you add more links to the channels.txt at a later date, more subdirectories will automatically be created for you based off of the channel names,
-so you simply need to run the script again or just let it run again via a cronjob (my preferred method).
+- **Channel Links**: You need to populate the `channels.txt` file with YouTube channel URLs in the format `https://www.youtube.com/@exampleone`. The use of the simplified format with `@` is crucial for the script to correctly parse and handle the channel names.
 
-**To delete any channels:** simply remove the link from the channels.txt file, and delete the directory of the channel in the youtube directory (For me, thats /media/youtube/deleteChannel).
+- **Subdirectory Creation**: Upon subsequent executions, the script reads the channel links from `channels.txt` and creates corresponding subdirectories within the `youtube` directory for each channel (e.g., `/media/youtube/exampleone` for `https://www.youtube.com/@exampleone`). This organization facilitates neat storage and easy management of downloaded content.
+
+- **File Management**: The `channels.txt` file is automatically moved into the `youtube` directory if found outside. Additionally, a `lastupdated.txt` file is created within the same directory, acting as a log to track when videos were last pulled and archived from YouTube.
+
+- **Content Downloading**: Using `yt-dlp`, the script downloads videos from the specified channels, placing them into their respective subdirectories. Each download updates the archive, ensuring only new content is downloaded in subsequent runs.
+
+- **Managing Channels**: To add more channels, simply insert new links into `channels.txt`. Removing a channel involves deleting its link from `channels.txt` and manually removing the corresponding subdirectory (e.g., `/media/youtube/exampleone`).
+
+This setup allows for easy expansion or reduction of your archived content by merely editing the `channels.txt` file. Automated runs through cron jobs can ensure your media server remains up-to-date without manual intervention.
+
+### Optional Discord Notifications
+
+By using the optional `discordbot.sh` script, you can receive updates via Discord notifications. This script parses the `lastupdated.txt` log to send a message about newly archived content or to notify when no new content has been detected. Configuration for Discord notifications involves setting up a webhook URL within the script.
 
 **DEPENDENCIES**
 -------------------------------------------------------------------------------------------------------
