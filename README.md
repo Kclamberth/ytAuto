@@ -2,7 +2,7 @@
 This is a simple script for use in cron jobs to automate the task of downloading youtube videos via yt-dlp. 
 
 **NOTE:**
-To use this script you need to download copy.sh and put it wherever you want.
+To use this script you need to download install.sh and put it wherever you want.
 For use in jellyfin, I have the script in the parent directory of shows.
 (EX: /media/shows contains the shows I watch, so the script is located in /media)
 
@@ -20,7 +20,7 @@ For use in jellyfin, I have the script in the parent directory of shows.
 
 ## How it Works
 
-When you run the `copy.sh` script for the first time, it accomplishes several key tasks to set up your YouTube content archiving system:
+When you run the `install.sh` script for the first time, it accomplishes several key tasks to set up your YouTube content archiving system:
 
 - **Directory and File Setup**: The script automatically creates a `youtube` directory in a specified base location (e.g., `/media/youtube`). Inside this directory, it initializes a `channels.txt` file.
 
