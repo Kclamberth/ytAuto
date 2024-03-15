@@ -16,7 +16,9 @@ formattedOutput=$'```Update:\n'"${output}"$'\n```'
 webhook_url='[INSERT WEBHOOKS URL HERE]'
 
 #Format as JSON
-json_payload=$(jq -n --arg content "$formattedOutput" '{content: $content}')
-
+#json_payload=$(jq -n --arg content "$formattedOutput" '{content: $content}')
+json_payload=$(jq -n --arg title "**Update:**" --arg desc "$output" --argjson color 5814783 \
+  '{embeds: [{title: $title, description: $desc, color: $color}]}')
+  
 #send to discord
 curl -H "Content-Type: application/json" -X POST -d "$json_payload" $webhook_url
