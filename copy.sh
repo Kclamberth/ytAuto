@@ -11,6 +11,12 @@ channelsFile="${youtubeDir}/channels.txt"
 mkdir -p "$youtubeDir"
 touch "$channelsFile"
 
+# Check if channels.txt is empty or does not exist, exit with an error message if it is
+if [ ! -s "$channelsFile" ]; then
+    echo "Error: 'channels.txt' is empty or does not exist. Exiting script."
+    exit 1
+fi
+
 # Move channels.txt to youtube directory if it's still in the base directory
 if [ -s "${baseDir}/channels.txt" ]; then
     mv "${baseDir}/channels.txt" "$channelsFile"
