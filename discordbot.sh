@@ -4,7 +4,7 @@
 output="$(cat /media/youtube/lastupdated.txt | tail -n"$(cat /media/youtube/channels.txt | wc -l)" | grep "downloaded")"
 
 if [[ -z "$output" ]]; then
-	output="All channels scanned. No new content detected as of $(date '+%b-%d-%Y %H:%M:%S')."
+	output="All channels scanned. No new content detected as of $(TZ='America/Los_Angeles' date '+%b-%d-%Y %H:%M:%S')."
 fi
 
 formattedOutput=$'```Update:\n'"${output}"$'\n```'
