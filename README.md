@@ -32,7 +32,7 @@ The channels.txt is used to pull data from when you add links to it. The lastupd
 If you add more links to the channels.txt at a later date, more subdirectories will automatically be created for you based off of the channel names,
 so you simply need to run the script again or just let it run again via a cronjob (my preferred method).
 
-**To delete any channels:** simply remove the link from the channels.txt file, and delete the directory of the channel in "/data/jellyfin/youtube".
+**To delete any channels:** simply remove the link from the channels.txt file, and delete the directory of the channel in the youtube directory (For me, thats /media/youtube/deleteChannel).
 
 **DEPENDENCIES**
 -------------------------------------------------------------------------------------------------------
