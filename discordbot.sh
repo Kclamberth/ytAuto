@@ -1,7 +1,10 @@
 #!/bin/bash
 
+baseDir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+youtubeDir="${baseDir}/youtube"
+
 #command to run
-output="$(cat /media/youtube/lastupdated.txt | tail -n"$(cat /media/youtube/channels.txt | wc -l)" | grep "archived")"
+output="$(cat $youtubeDir/lastupdated.txt | tail -n"$(cat $youtubeDir/channels.txt | wc -l)" | grep "archived")"
 
 if [[ -z "$output" ]]; then
 	output="All channels scanned. No new content detected as of $(TZ='America/Los_Angeles' date '+%b-%d-%Y %H:%M:%S')."
