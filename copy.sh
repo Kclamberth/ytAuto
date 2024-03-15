@@ -39,9 +39,9 @@ while IFS= read -r line; do
     afterDownload=$(ls -A | wc -l)
 
     if [ "$afterDownload" -gt "$beforeDownload" ]; then
-        echo "${channelName} scan complete. New content archived on $(date '+%b-%d-%Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
+        echo "${channelName} scan complete. New content archived on $(TZ='America/Los_Angeles' date '+%b-%d-%Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
     else
-        echo "${channelName} scan complete. No new content as of $(date '+%b-%d-%Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
+        echo "${channelName} scan complete. No new content as of $(TZ='America/Los_Angeles' date '+%b-%d-%Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
     fi
 
     ((counter++))
