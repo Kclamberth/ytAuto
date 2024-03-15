@@ -50,4 +50,4 @@ done < "$channelsFile"
 echo "Download process complete. Check ${youtubeDir}/lastupdated.txt for updates."
 
 # Optional: Notify completion via Discord or another method
-/usr/bin/bash /media/discordbot.sh
+$(which bash) ${baseDir}/discordbot.sh
