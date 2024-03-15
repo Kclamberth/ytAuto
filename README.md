@@ -12,6 +12,8 @@ For use in jellyfin, I have the script in the parent directory of shows.
 --------------------------------------------------------------------------------------------------------------------------------
 * Refactored code.
 
+* Created install.sh script.
+
 * Removed all hard path references. This code should now work on any Linux system, assuming dependencies are resolved.
 
 * Modified copy.sh and discordbot.sh to accept timezones in the 3 date lines (2 in copy.sh, 1 in discordbot.sh).
