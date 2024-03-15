@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set base directory to the location of copy.sh or default to "/media" if not found
-baseDir=$(find / -name copy.sh 2>/dev/null | xargs dirname 2>/dev/null)
+baseDir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 cd "$baseDir" || exit
 
 youtubeDir="${baseDir}/youtube"
