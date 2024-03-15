@@ -34,11 +34,11 @@ so you simply need to run the script again or just let it run again via a cronjo
 
 **DEPENDENCIES**
 -------------------------------------------------------------------------------------------------------
-* yt-dlp
+1.) yt-dlp
 
-* ffmpeg
+2.) ffmpeg
 
-* jq
+3.) jq
   
 **INSTALLATION:**
 -----------------------------------------------------------------------------------------------------------
