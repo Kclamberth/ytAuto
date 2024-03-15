@@ -13,7 +13,7 @@ touch "$channelsFile"
 
 # Check if channels.txt is empty or does not exist, exit with an error message if it is
 if [ ! -s "$channelsFile" ]; then
-    echo "Error: 'channels.txt' is empty or does not exist. Exiting script."
+    echo "Error: '${youtubeDir}/channels.txt' is empty. Exiting script."
     exit 1
 fi
 
