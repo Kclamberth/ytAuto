@@ -28,7 +28,7 @@ When you run the `install.sh` script for the first time, it accomplishes several
 
 - **Channel Links**: You need to populate the `channels.txt` file with YouTube channel URLs in the format `https://www.youtube.com/@exampleone`. The use of the simplified format with `@` is crucial for the script to correctly parse and handle the channel names.
 
-- **Subdirectory Creation**: Upon subsequent executions of copy.sh, the script reads the channel links from `channels.txt` and creates corresponding subdirectories within the `youtube` directory for each channel (e.g., `/media/youtube/exampleone` for `https://www.youtube.com/@exampleone`). This organization facilitates neat storage and easy management of downloaded content.
+- **Subdirectory Creation**: Upon subsequent executions of `copy.sh`, the script reads the channel links from `channels.txt` and creates corresponding subdirectories within the `youtube` directory for each channel (e.g., `/media/youtube/exampleone` for `https://www.youtube.com/@exampleone`). This organization facilitates neat storage and easy management of downloaded content.
 
 - **File Management**: The `channels.txt` file is automatically moved into the `youtube` directory if found outside. Additionally, a `lastupdated.txt` file is created within the same directory, acting as a log to track when videos were last pulled and archived from YouTube.
 
