@@ -71,4 +71,4 @@ echo ""
 echo "Thank you for using kclamberth/yt-dlp-auto-updater!"
 echo -e "${RESET}"
 
-#rm $(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)/test.sh
+rm $(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)/test.sh
