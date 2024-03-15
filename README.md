@@ -8,7 +8,7 @@ For use in jellyfin, I have the script in the parent directory of shows.
 
 **The first time you run this script, you need to run it from the directory you intend the youtube directory to be (EX. I ran it from /media the first time), this is because all the subdirectories will be created in that directory!**
 
-**UPDATE 2024-03-09:**
+**UPDATE 2024-03-15:**
 --------------------------------------------------------------------------------------------------------------------------------
 * Refactored code.
 
