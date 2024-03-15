@@ -20,10 +20,10 @@ For use in jellyfin, I have the script in the parent directory of shows.
 
 **HOW IT WORKS:**
 --------------------------------------------------------------------------------------------------------------------------------
-The first time you run this script, it will create a channels.txt file for you in the same directory as itself (for me that is in /media).
+The first time you run this script, it will create a channels.txt file for you in the same youtube directory it creates (for me that is in /media/youtube).
 You simply add youtube channel links to this file in the **"https://www.youtube.com/@exampleone"** format. The simplified format with @ is important.
 
-Once you add channel links to the channel.txt file, the next time you run the script it will automatically create a youtube directory in it's directory (/media if the copy.sh is located there) and then it will create subdirectories based off the channel link names. 
+Once you add channel links to the channel.txt file, the next time you run the script it will automatically create subdirectories based off the channel link names. 
 (EX: https://www.youtube.com/@exampleone creates a subdirectory called /media/youtube/exampleone in the /media/youtube directory.)
 
 **This script will move channels.txt into the youtube directory, and it will create a lastupdated.txt in the youtube directory as well.**
