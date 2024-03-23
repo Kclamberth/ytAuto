@@ -1,6 +1,6 @@
 # yt-dlp-auto-updater
 This is a simple script for use in cron jobs to automate the task of downloading youtube videos via yt-dlp. 
-![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=kclamberth&show_icons=true&theme=transparent)
+
 **NOTE:**
 To use this script you need to download install.sh and put it wherever you want.
 For use in jellyfin, I have the script in the parent directory of shows.
