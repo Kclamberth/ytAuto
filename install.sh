@@ -1,14 +1,12 @@
 #!/bin/bash
 
-# Installer script for YouTube Content Archiver and Discord Notifier
-
 #colors
 GREEN='\e[32m'
 RED='\e[31m'
 YELLOW='\e[33m'
 RESET='\e[0m'
 
-# Dependencies check
+# dependencies check
 dependencies=(yt-dlp jq curl bash)
 missing_dependencies=0
 
@@ -27,28 +25,23 @@ fi
 
 echo -e "${GREEN}All required dependencies are installed.${RESET}"
 
-# Set base directory and youtube directory
 baseDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 youtubeDir="${baseDir}/youtube"
 
-# Create directories
 echo "Creating directory structure..."
 mkdir -p "$youtubeDir"
 echo -e "${GREEN}Directory structure created at ${baseDir}.${RESET}"
 
-# Download scripts
 echo "Downloading scripts..."
 curl -o "${baseDir}/copy.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/copy.sh"
 curl -o "${baseDir}/discordbot.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/discordbot.sh"
 curl -o "${baseDir}/discordbot.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/thumbnail.sh"
 echo -e "${GREEN}Scripts downloaded.${RESET}"
 
-# Make scripts executable
 chmod +x "${baseDir}/copy.sh"
 chmod +x "${baseDir}/discordbot.sh"
 chmod +x "${baseDir}/thumbnail.sh"
 
-# Setup channels.txt
 if [ ! -f "${youtubeDir}/channels.txt" ]; then
     touch "${youtubeDir}/channels.txt"
     echo "Created channels.txt file. Please add YouTube channel links to it."
