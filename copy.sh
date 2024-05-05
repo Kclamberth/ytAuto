@@ -46,6 +46,7 @@ while IFS= read -r line; do
 
     if [ "$afterDownload" -gt "$beforeDownload" ]; then
         echo "${channelName} update complete. New content archived on $(TZ='America/Los_Angeles' date '+%b-%d-%Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
+        $(which bash) "${baseDir}/thumbnail.sh" "$channelDir"
     else
         echo "${channelName} update complete. No new content as of $(TZ='America/Los_Angeles' date '+%b-%d-%Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
     fi
