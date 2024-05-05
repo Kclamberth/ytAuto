@@ -40,11 +40,13 @@ echo -e "${GREEN}Directory structure created at ${baseDir}.${RESET}"
 echo "Downloading scripts..."
 curl -o "${baseDir}/copy.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/copy.sh"
 curl -o "${baseDir}/discordbot.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/discordbot.sh"
+curl -o "${baseDir}/discordbot.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/thumbnail.sh"
 echo -e "${GREEN}Scripts downloaded.${RESET}"
 
 # Make scripts executable
 chmod +x "${baseDir}/copy.sh"
 chmod +x "${baseDir}/discordbot.sh"
+chmod +x "${baseDir}/thumbnail.sh"
 
 # Setup channels.txt
 if [ ! -f "${youtubeDir}/channels.txt" ]; then
