@@ -35,7 +35,7 @@ echo -e "${GREEN}Directory structure created at ${baseDir}.${RESET}"
 echo "Downloading scripts..."
 curl -o "${baseDir}/copy.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/copy.sh"
 curl -o "${baseDir}/discordbot.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/discordbot.sh"
-curl -o "${baseDir}/discordbot.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/thumbnail.sh"
+curl -o "${baseDir}/thumbnail.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/thumbnail.sh"
 echo -e "${GREEN}Scripts downloaded.${RESET}"
 
 chmod +x "${baseDir}/copy.sh"
