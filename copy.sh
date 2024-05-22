@@ -1,22 +1,23 @@
 #!/bin/bash
 
-# Set base directory to the location of copy.sh
+# Set base directory to the location of copy.sh or default to "/media" if not found
 baseDir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 cd "$baseDir" || exit
 
 youtubeDir="${baseDir}/youtube"
 channelsFile="${youtubeDir}/channels.txt"
 
+# Ensure youtube directory and channels.txt file exist
 mkdir -p "$youtubeDir"
 touch "$channelsFile"
 
-# Check if channels.txt is empty or does not exist
+# Check if channels.txt is empty or does not exist, exit with an error message if it is
 if [ ! -s "$channelsFile" ]; then
     echo "Error: '${youtubeDir}/channels.txt' is empty. Exiting script."
     exit 1
 fi
 
-# Move channels.txt to youtube directory
+# Move channels.txt to youtube directory if it's still in the base directory
 if [ -s "${baseDir}/channels.txt" ]; then
     mv "${baseDir}/channels.txt" "$channelsFile"
 fi
@@ -32,7 +33,7 @@ done < "$channelsFile"
 
 echo "Subdirectories for channels have been updated."
 
-# Main Download
+# Download content for each channel
 counter=1
 while IFS= read -r line; do
     channelName=$(echo "$line" | awk -F "@" '{print $2}')
