@@ -6,7 +6,6 @@ cd "$baseDir" || exit
 
 youtubeDir="${baseDir}/youtube"
 channelsFile="${youtubeDir}/channels.txt"
-LOG_FILE="${youtubeDir}/copy_log.txt"
 
 # Ensure youtube directory and channels.txt file exist
 mkdir -p "$youtubeDir"
@@ -14,7 +13,7 @@ touch "$channelsFile"
 
 # Check if channels.txt is empty or does not exist, exit with an error message if it is
 if [ ! -s "$channelsFile" ]; then
-    echo "[$(TZ='America/Los_Angeles' date '+%Y-%m-%d %H:%M:%S')] Error: '${youtubeDir}/channels.txt' is empty. Exiting script." | tee -a "$LOG_FILE"
+    echo "Error: '${youtubeDir}/channels.txt' is empty. Exiting script."
     exit 1
 fi
 
@@ -30,10 +29,9 @@ fi
 while IFS= read -r line; do
     channelName=$(echo "$line" | awk -F "@" '{print $2}')
     mkdir -p "${youtubeDir}/${channelName}"
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Created directory for ${channelName}" | tee -a "$LOG_FILE"
 done < "$channelsFile"
 
-echo "[$(TZ='America/Los_Angeles' date '+%Y-%m-%d %H:%M:%S')] Subdirectories for channels have been updated." | tee -a "$LOG_FILE"
+echo "Subdirectories for channels have been updated."
 
 # Download content for each channel
 counter=1
@@ -42,23 +40,21 @@ while IFS= read -r line; do
     channelDir="${youtubeDir}/${channelName}"
     cd "$channelDir" || continue
 
-    echo "[$(TZ='America/Los_Angeles' date '+%Y-%m-%d %H:%M:%S')] Starting download for ${channelName}" | tee -a "$LOG_FILE"
-    
     beforeDownload=$(ls -A | wc -l)
     yt-dlp "$line" --embed-chapters --embed-metadata --download-archive archive.txt
     afterDownload=$(ls -A | wc -l)
 
     if [ "$afterDownload" -gt "$beforeDownload" ]; then
-        echo "[$(TZ='America/Los_Angeles' date '+%Y-%m-%d %H:%M:%S')] ${channelName} update complete. New content archived." | tee -a "$LOG_FILE"
+        echo "${channelName} update complete. New content archived on $(TZ='America/Los_Angeles' date '+%b-%d-%Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
         $(which bash) "${baseDir}/thumbnail.sh" "$channelDir"
     else
-        echo "[$(TZ='America/Los_Angeles' date '+%Y-%m-%d %H:%M:%S')] ${channelName} update complete. No new content." | tee -a "$LOG_FILE"
+        echo "${channelName} update complete. No new content as of $(TZ='America/Los_Angeles' date '+%b-%d-%Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
     fi
 
     ((counter++))
 done < "$channelsFile"
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Download process complete. Check "$LOG_FILE" for updates." | tee -a "$LOG_FILE"
+echo "Download process complete. Check ${youtubeDir}/lastupdated.txt for updates."
 
 # Optional: Notify completion via Discord or another method
-$(which bash) "${BASE_DIR}/discordbot.sh" | tee -a "$LOG_FILE" || exit
+$(which bash) "${baseDir}"/discordbot.sh || exit
