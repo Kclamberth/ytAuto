@@ -6,7 +6,7 @@ cd "$baseDir" || exit
 
 youtubeDir="${baseDir}/youtube"
 channelsFile="${youtubeDir}/channels.txt"
-LOG_FILE="${YOUTUBE_DIR}/copy_log.txt"
+LOG_FILE="${youtubeDir}/copy_log.txt"
 
 # Ensure youtube directory and channels.txt file exist
 mkdir -p "$youtubeDir"
