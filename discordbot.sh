@@ -8,7 +8,7 @@ IFS=$'\n' read -d '' -r -a updates < <(cat $youtubeDir/lastupdated.txt | tail -n
 
 if [ ${#updates[@]} -eq 0 ]; then
     # No updates found
-    output="All channels scanned. No new content detected as of $(TZ='America/Los_Angeles' date '+%H:%M:%S')."
+    output="[$(TZ='America/Los_Angeles' date '+%H:%M:%S')] All channels scanned. No new content detected."
     updateDate=$(TZ='America/Los_Angeles' date '+%b-%d-%Y')
 else
     # Extract the date from the last update for the title
@@ -17,9 +17,9 @@ else
 
     # Process updates to format as requested
     for i in "${!updates[@]}"; do
-        channelName=$(echo "${updates[$i]}" | sed -E 's/ update complete. New content archived on .*//')
+        channelName=$(echo "${updates[$i]}" | sed -E 's/^\[.*\] (.*): New content archived\.$/\1/')
         timestamp=$(echo "${updates[$i]}" | grep -oE '[0-9]{2}:[0-9]{2}:[0-9]{2}')
-        updates[$i]="${channelName} update complete. New content archived at ${timestamp}."
+        updates[$i]="[${timestamp}] ${channelName}: New content archived."
     done
 
     # Join updates with newline character
