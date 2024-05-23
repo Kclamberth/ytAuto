@@ -26,7 +26,7 @@ else
     output=$(printf '%s\n' "${updates[@]}")
 fi
 
-webhook_url='https://discord.com/api/webhooks/1176388899782807582/NQ0VVWZDMBgxbZMaFXwcyE4jrSbEYgC78yAOApUZa3rOoprXZB7_qWFvtuqgoLJm-u5W'
+webhook_url='WEBHOOKURL'
 # Format as JSON
 json_payload=$(jq -n --arg title "**Update $updateDate:**" --arg desc "$output" --argjson color 5814783 \
   '{embeds: [{title: $title, description: $desc, color: $color}]}')
