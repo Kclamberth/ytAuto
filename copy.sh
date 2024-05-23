@@ -45,10 +45,10 @@ while IFS= read -r line; do
     afterDownload=$(ls -A | wc -l)
 
     if [ "$afterDownload" -gt "$beforeDownload" ]; then
-        echo "${channelName} update complete. New content archived on $(TZ='America/Los_Angeles' date '+%b-%d-%Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
+        echo "[$(TZ='America/Los_Angeles' date '+%Y-%m-%d %H:%M:%S')] ${channelName}: New content archived." >> "${youtubeDir}/lastupdated.txt"
         $(which bash) "${baseDir}/thumbnail.sh" "$channelDir"
     else
-        echo "${channelName} update complete. No new content as of $(TZ='America/Los_Angeles' date '+%b-%d-%Y %H:%M:%S')." >> "${youtubeDir}/lastupdated.txt"
+        echo "[$(TZ='America/Los_Angeles' date '+%Y-%m-%d %H:%M:%S')] ${channelName}: No new content." >> "${youtubeDir}/lastupdated.txt"
     fi
 
     ((counter++))
