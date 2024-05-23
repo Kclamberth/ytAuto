@@ -13,7 +13,7 @@ if [ ${#updates[@]} -eq 0 ]; then
 else
     # Extract the date from the last update for the title
     lastUpdate="${updates[${#updates[@]}-1]}"
-    updateDate=$(echo "$lastUpdate" | grep -oE '[A-Za-z]{3}-[0-9]{2}-[0-9]{4}')
+    updateDate=$(TZ='America/Los_Angeles' date '+%b-%d-%Y')
 
     # Process updates to format as requested
     for i in "${!updates[@]}"; do
