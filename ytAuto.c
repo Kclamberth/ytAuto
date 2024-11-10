@@ -10,12 +10,20 @@
 #include <unistd.h>
 #include <wait.h>
 
+#define YOUTUBE "Youtube"
+#define CHANNELS_FILE "/channels.txt"
+#define LOG_FILE "/lastupdated.txt"
+#define PERMISSIONS 0777
+#define TIME_OUTPUT_SIZE 50
+#define LOG_MESSAGE_SIZE 1024
+#define RETRIES "20"
+
 int youtube_dir(char *working_dir) {
   // Check for youtube dir
   struct stat st = {0};
   if (stat(working_dir, &st) == -1) {
     // create youtube dir if not found
-    int create_youtube_dir = mkdir("Youtube", 0777);
+    int create_youtube_dir = mkdir(YOUTUBE, PERMISSIONS);
     if (create_youtube_dir != 0) {
       perror("Error making youtube directory\n");
       return -1;
@@ -34,7 +42,7 @@ void ytdlp(char *full_link, char *channels_location) {
                        "--download-archive",
                        "archive.txt",
                        "--retries",
-                       "20",
+                       RETRIES,
                        NULL};
   execvp(arguments[0], arguments);
   perror("execvp failed.");
@@ -67,7 +75,7 @@ void log_line(FILE *log_file, const char *message) {
   // setup time structure
   time_t timestamp = time(NULL);
   struct tm datetime = *localtime(&timestamp);
-  char time_output[50];
+  char time_output[TIME_OUTPUT_SIZE];
   strftime(time_output, sizeof(time_output), "%Y-%m-%d %H:%M:%S", &datetime);
 
   // lock log, write to it, unlock
@@ -101,7 +109,7 @@ void fork_process(char *full_link, char *channel_location, char *channel_name,
       // First child, waits for ytdlp to finish
       wait(NULL);
       int after_update = count_files_in_dir(channel_location);
-      char log_message[1024];
+      char log_message[LOG_MESSAGE_SIZE];
 
       // dir grew, update log file
       if (after_update > before_update) {
@@ -171,7 +179,7 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path) {
     struct stat st = {0};
     if (stat(channel_location, &st) == -1) {
       // create dir if not found
-      int create_youtube_dir = mkdir(channel_location, 0777);
+      int create_youtube_dir = mkdir(channel_location, PERMISSIONS);
       if (create_youtube_dir != 0) {
         perror("Error making channel directory");
         return -1;
@@ -197,15 +205,13 @@ int main(int argc, char **argv) {
   char working_dir[PATH_MAX];
   char channels_path[PATH_MAX];
   char log_path[PATH_MAX];
-  char *youtube = "/Youtube";
-  char *channels = "/channels.txt";
-  char *log = "/lastupdated.txt";
 
   // Create working dir path
   if (getcwd(working_dir, sizeof(working_dir)) == NULL) {
     perror("Error getting working directory");
   } else {
-    strcat(working_dir, youtube);
+    strcat(working_dir, "/");
+    strcat(working_dir, YOUTUBE);
   }
 
   // Check/create youtube dir
@@ -214,12 +220,12 @@ int main(int argc, char **argv) {
   }
 
   // Check/create channels file
-  if (create_file(working_dir, channels_path, channels) != 0) {
+  if (create_file(working_dir, channels_path, CHANNELS_FILE) != 0) {
     return -1;
   }
 
   // Check/create log file
-  if (create_file(working_dir, log_path, log) != 0) {
+  if (create_file(working_dir, log_path, LOG_FILE) != 0) {
     return -1;
   }
 
@@ -228,7 +234,7 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  printf("\nFinished updating channels.\n");
+  printf("Finished updating channels.\n");
 
   return 0;
 }
