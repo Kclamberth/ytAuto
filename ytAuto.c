@@ -90,8 +90,6 @@ void log_line(FILE *log_file, const char *message) {
 
 void fork_process(char *full_link, char *channel_location, char *channel_name,
                   FILE *log_file) {
-  int before_update = count_files_in_dir(channel_location);
-
   pid_t pid = fork();
   // failed
   if (pid == -1) {
@@ -108,9 +106,14 @@ void fork_process(char *full_link, char *channel_location, char *channel_name,
     } else if (ytdlp_pid == 0) {
       // Second child (child of child)
       ytdlp(full_link, channel_location);
+      _exit(0);
     } else {
-      // First child, waits for ytdlp to finish
-      wait(NULL);
+      // First child - !!!POSSIBLE RACE CONDITION!!!
+      int before_update = count_files_in_dir(channel_location);
+
+      // wait for ytdlp process to finish
+      waitpid(ytdlp_pid, NULL, 0);
+
       int after_update = count_files_in_dir(channel_location);
       char log_message[LOG_MESSAGE_SIZE];
 
