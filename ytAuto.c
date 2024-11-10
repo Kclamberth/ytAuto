@@ -206,6 +206,20 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path) {
   return 0;
 }
 
+int is_empty(char *channels_path) {
+  struct stat st;
+  if (stat(channels_path, &st) != 0) {
+    perror("Error checking channels file.");
+    return -1;
+  } else {
+    if (st.st_size == 0) {
+      printf("%s is empty, please enter a channel link.\n", channels_path);
+      return -1;
+    }
+  }
+  return 0;
+}
+
 int main(int argc, char **argv) {
   // Setup working directory variables
   char working_dir[PATH_MAX];
@@ -220,22 +234,27 @@ int main(int argc, char **argv) {
     strcat(working_dir, YOUTUBE);
   }
 
-  // Check/create youtube dir
+  // Check for / create youtube dir
   if (youtube_dir(working_dir) != 0) {
     return -1;
   }
 
-  // Check/create channels file
+  // Check for / create channels file
   if (create_file(working_dir, channels_path, CHANNELS_FILE) != 0) {
     return -1;
   }
 
-  // Check/create log file
+  // Check for / create log file
   if (create_file(working_dir, log_path, LOG_FILE) != 0) {
     return -1;
   }
 
-  // Check/create/update channel dirs
+  // Check for channel file contents
+  if (is_empty(channels_path) != 0) {
+    return -1;
+  }
+
+  // Check for / create / update channel dirs
   if (channels_dir(working_dir, channels_path, log_path) != 0) {
     return -1;
   }
