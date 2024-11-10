@@ -20,15 +20,11 @@ int youtube_dir(char *working_dir) {
       perror("Error making youtube directory\n");
       return -1;
     }
-  } else {
-    // youtube dir already exists
-    printf("Youtube dir already exists\n");
   }
   return 0;
 }
 
 void ytdlp(char *full_link, char *channels_location) {
-  printf("process path: %s\n", channels_location);
   chdir(channels_location);
   full_link[strlen(full_link) - 1] = '\0';
   char *arguments[] = {"yt-dlp",
@@ -130,9 +126,7 @@ int create_file(char *working_dir, char *file_path, char *file_name) {
   snprintf(file_path, PATH_MAX, "%s%s", working_dir, file_name);
 
   // check if file exists
-  if (access(file_path, F_OK) == 0) {
-    printf("%s already exists!\n", file_name);
-  } else {
+  if (access(file_path, F_OK) != 0) {
     // create file if not found
     FILE *fd = fopen(file_path, "w");
     if (fd == NULL) {
@@ -182,9 +176,6 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path) {
         perror("Error making channel directory");
         return -1;
       }
-    } else {
-      // youtube dir already exists
-      printf("%s dir already exists\n", channel_name);
     }
 
     fork_process(full_link, channel_location, channel_name, log_file);
