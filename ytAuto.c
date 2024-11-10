@@ -150,16 +150,22 @@ int create_file(char *working_dir, char *file_path, char *file_name) {
 int channels_dir(char *working_dir, char *channels_path, char *log_path) {
   // Read each line from channels_path
   FILE *channels_list = fopen(channels_path, "r");
-  FILE *log_file = fopen(log_path, "a");
   if (channels_list == NULL) {
     perror("Error opening channels file.\n");
     return -1;
   }
 
+  FILE *log_file = fopen(log_path, "a");
+  if (log_file == NULL) {
+    perror("Error opening channels file.\n");
+    fclose(channels_list);
+    return -1;
+  }
+
   char *buffer = NULL;
   size_t buffer_size;
-  ssize_t channel_link;
-  while ((channel_link = getline(&buffer, &buffer_size, channels_list)) != -1) {
+  ssize_t line_length;
+  while ((line_length = getline(&buffer, &buffer_size, channels_list)) != -1) {
     // grab full link for use in ytdlp below
     char *full_link = strdup(buffer);
     // find first occurence of '@'
