@@ -41,31 +41,106 @@ void ytdlp(char *full_link, char *channels_location) {
                        NULL};
   execvp(arguments[0], arguments);
   perror("execvp failed.");
+  _exit(-1);
 }
 
-int channels_file(char *working_dir, char *channels_path, char *channels) {
-  // create path to channels.txt
-  snprintf(channels_path, PATH_MAX, "%s%s", working_dir, channels);
+int count_files_in_dir(char *channel_location) {
+  int file_count = 0;
+  DIR *directory;
+  struct dirent *entry;
+  directory = opendir(channel_location);
+  if (directory == NULL) {
+    perror("Error counting files");
+    return -1;
+  }
 
-  // check if channels.txt exists
-  if (access(channels_path, F_OK) == 0) {
-    printf("Channels.txt already exists!\n");
+  // iterate through each file in directory, until NULL is reached (EOD)
+  while ((entry = readdir(directory)) != NULL) {
+    // if entry is a reg file
+    if (entry->d_type == DT_REG) {
+      file_count++;
+    }
+  }
+
+  closedir(directory);
+  return file_count;
+}
+
+void log_line(FILE *log_file, const char *message) {
+  flockfile(log_file);
+  fprintf(log_file, "%s\n", message);
+  funlockfile(log_file);
+  fflush(log_file);
+}
+
+void fork_process(char *full_link, char *channel_location, char *channel_name,
+                  FILE *log_file) {
+  int before_update = count_files_in_dir(channel_location);
+
+  pid_t pid = fork();
+  // failed
+  if (pid == -1) {
+    perror("Fork failed");
+    free(full_link);
+    _exit(-1);
+  } else if (pid == 0) {
+    pid_t ytdlp_pid = fork();
+    // failed
+    if (ytdlp_pid == -1) {
+      perror("Fork failed");
+      free(full_link);
+      _exit(-1);
+    } else if (ytdlp_pid == 0) {
+      // Second child (child of child)
+      ytdlp(full_link, channel_location);
+    } else {
+      // First child, waits for ytdlp to finish
+      wait(NULL);
+      int after_update = count_files_in_dir(channel_location);
+      char log_message[1024];
+
+      // dir grew, update log file
+      if (after_update > before_update) {
+        snprintf(log_message, sizeof(log_message), "%s: New content archived.",
+                 channel_name);
+      } else {
+        snprintf(log_message, sizeof(log_message),
+                 "%s: No new content archived.", channel_name);
+      }
+      log_line(log_file, log_message);
+
+      free(full_link);
+      _exit(0);
+    }
   } else {
-    // create channels.txt if not found
-    FILE *channels_fd = fopen(channels_path, "w");
-    if (channels_fd == NULL) {
+    // original parent
+  }
+}
+
+int create_file(char *working_dir, char *file_path, char *file_name) {
+  // create path to file
+  snprintf(file_path, PATH_MAX, "%s%s", working_dir, file_name);
+
+  // check if file exists
+  if (access(file_path, F_OK) == 0) {
+    printf("%s already exists!\n", file_name);
+  } else {
+    // create file if not found
+    FILE *fd = fopen(file_path, "w");
+    if (fd == NULL) {
       perror("Error creating channels file.\n");
       return -1;
     } else {
-      fclose(channels_fd);
+      fclose(fd);
     }
   }
   return 0;
 }
 
-int channels_dir(char *working_dir, char *channels_path) {
+int channels_dir(char *working_dir, char *channels_path, char *log_path) {
   // Read each line from channels_path
   FILE *channels_list = fopen(channels_path, "r");
+  FILE *log_file = fopen(log_path, "a");
   if (channels_list == NULL) {
     perror("Error opening channels file.\n");
     return -1;
@@ -104,18 +179,7 @@ int channels_dir(char *working_dir, char *channels_path) {
       printf("%s dir already exists\n", channel_name);
     }
 
-    pid_t pid = fork();
-    // failed
-    if (pid == -1) {
-      perror("Fork failed");
-      free(full_link);
-      return -1;
-      // child
-    } else if (pid == 0) {
-      ytdlp(full_link, channel_location);
-      free(full_link);
-      _exit(0);
-    }
+    fork_process(full_link, channel_location, channel_name, log_file);
     free(full_link);
   }
 
@@ -124,6 +188,7 @@ int channels_dir(char *working_dir, char *channels_path) {
     ;
 
   free(buffer);
+  fclose(log_file);
   fclose(channels_list);
   return 0;
 }
@@ -132,8 +197,10 @@ int main(int argc, char **argv) {
   // Setup working directory variables
   char working_dir[PATH_MAX];
   char channels_path[PATH_MAX];
+  char log_path[PATH_MAX];
   char *youtube = "/Youtube";
   char *channels = "/channels.txt";
+  char *log = "/lastupdated.txt";
 
   // Create working dir path
   if (getcwd(working_dir, sizeof(working_dir)) == NULL) {
@@ -148,14 +215,21 @@ int main(int argc, char **argv) {
   }
 
   // Check/create channels file
-  if (channels_file(working_dir, channels_path, channels) != 0) {
+  if (create_file(working_dir, channels_path, channels) != 0) {
     return -1;
   }
 
-  // Check/create channel dirs
-  if (channels_dir(working_dir, channels_path) != 0) {
+  // Check/create log file
+  if (create_file(working_dir, log_path, log) != 0) {
     return -1;
   }
+
+  // Check/create/update channel dirs
+  if (channels_dir(working_dir, channels_path, log_path) != 0) {
+    return -1;
+  }
+
+  printf("\nFinished updating channels.\n");
 
   return 0;
 }
