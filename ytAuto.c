@@ -6,6 +6,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <time.h>
 #include <unistd.h>
 #include <wait.h>
 
@@ -67,8 +68,15 @@ int count_files_in_dir(char *channel_location) {
 }
 
 void log_line(FILE *log_file, const char *message) {
+  // setup time structure
+  time_t timestamp = time(NULL);
+  struct tm datetime = *localtime(&timestamp);
+  char time_output[50];
+  strftime(time_output, sizeof(time_output), "%Y-%m-%d %H:%M:%S", &datetime);
+
+  // lock log, write to it, unlock
   flockfile(log_file);
-  fprintf(log_file, "%s\n", message);
+  fprintf(log_file, "[%s] %s\n", time_output, message);
   funlockfile(log_file);
   fflush(log_file);
 }
