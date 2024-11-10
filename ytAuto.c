@@ -172,6 +172,10 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path) {
   size_t buffer_size;
   ssize_t line_length;
   while ((line_length = getline(&buffer, &buffer_size, channels_list)) != -1) {
+    // skip empties
+    if (line_length <= 1)
+      continue;
+
     // grab full link for use in ytdlp below
     char *full_link = strdup(buffer);
     // find first occurence of '@'
