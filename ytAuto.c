@@ -33,7 +33,10 @@ int youtube_dir(char *working_dir) {
 }
 
 void ytdlp(char *full_link, char *channels_location) {
-  chdir(channels_location);
+  if (chdir(channels_location) != 0) {
+    perror("Error changing directories");
+    _exit(-1);
+  }
   full_link[strlen(full_link) - 1] = '\0';
   char *arguments[] = {"yt-dlp",
                        full_link,
