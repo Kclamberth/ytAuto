@@ -2,8 +2,8 @@
 This is a powerful terminal based C program for use in cron jobs to automate the task of downloading youtube videos via yt-dlp. 
 
 **NOTE:**
-For use in jellyfin, I have the program in the parent directory of shows.
-(EX: /media/Youtube is where I want my videos, so I have the program located in /media)
+For use in jellyfin, I have the program in the parent directory of shows (/media/tvshows), and movies (/media/movies).
+(EX: /media/Youtube is where I want my youtube channels, so I have the program located in /media)
 
 **The first time you run this program, you need to run it from the directory you intend the youtube directory to be (EX. I ran it from /media the first time), this is because all the subdirectories will be created in that directory!**
 
