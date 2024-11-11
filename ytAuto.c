@@ -35,10 +35,20 @@ void ytdlp(char *full_link, char *channels_location) {
     _exit(-1);
   }
   full_link[strlen(full_link) - 1] = '\0';
+  // yt-dlp github contains list of args
   char *arguments[] = {"yt-dlp",
                        full_link,
                        "--embed-chapters",
                        "--embed-metadata",
+                       "--write-thumbnail",
+                       "--output",
+                       "%(title)s.%(ext)s",
+                       "--convert-thumbnails",
+                       "webp",
+                       "-o",
+                       "thumbnail:%(title)s.%(ext)s",
+                       "-o",
+                       "pl_thumbnail:",
                        "--download-archive",
                        "archive.txt",
                        "--retries",
