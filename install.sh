@@ -1,5 +1,8 @@
 #!/bin/bash
 
+BASE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+YOUTUBE_DIR="${BASE_DIR}/youtube"
+
 #colors
 GREEN='\e[32m'
 RED='\e[31m'
@@ -12,7 +15,7 @@ missing_dependencies=0
 
 echo "Checking for required dependencies..."
 for dep in "${dependencies[@]}"; do
-    if ! command -v $dep &> /dev/null; then
+    if ! command -v "$dep" &> /dev/null; then
         echo -e "${RED}Missing dependency: $dep${RESET}"
         missing_dependencies=1
     fi
@@ -25,45 +28,28 @@ fi
 
 echo -e "${GREEN}All required dependencies are installed.${RESET}"
 
-baseDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-youtubeDir="${baseDir}/youtube"
-
-echo "Creating directory structure..."
-mkdir -p "$youtubeDir"
-echo -e "${GREEN}Directory structure created at ${baseDir}.${RESET}"
 
 echo "Downloading scripts..."
-curl -o "${baseDir}/copy.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/copy.sh"
-curl -o "${baseDir}/discordbot.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/discordbot.sh"
-curl -o "${baseDir}/thumbnail.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/main/thumbnail.sh"
+curl -o "${BASE_DIR}/ytAuto.c" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/refs/heads/main/ytAuto/ytAuto.c"
+curl -o "${BASE_DIR}/discordbot.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/refs/heads/main/ytAuto/discordbot.sh"
 echo -e "${GREEN}Scripts downloaded.${RESET}"
 
-chmod +x "${baseDir}/copy.sh"
-chmod +x "${baseDir}/discordbot.sh"
-chmod +x "${baseDir}/thumbnail.sh"
-
-if [ ! -f "${youtubeDir}/channels.txt" ]; then
-    touch "${youtubeDir}/channels.txt"
-    echo "Created channels.txt file. Please add YouTube channel links to it."
-else
-    echo "channels.txt already exists."
-fi
+chmod +x "${BASE_DIR}/discordbot.sh"
+gcc -o ytAuto ytAuto.c
 
 # Final instructions
 echo -e "${YELLOW}"
 echo "Setup is complete! Here are the next steps:"
 echo ""
-echo "1. Edit ${youtubeDir}/channels.txt and add YouTube channel links in the format:"
+echo "1. Edit ${YOUTUBE_DIR}/channels.txt and add YouTube channel links in the format:"
 echo "   https://www.youtube.com/@exampleone"
 echo ""
-echo "2. Edit ${baseDir}/discordbot.sh and insert your Discord webhook URL where indicated."
+echo "2. Edit ${BASE_DIR}/discordbot.sh and insert your Discord webhook URL where indicated."
 echo ""
-echo "3. To automate the archiving process, consider setting up a cron job for copy.sh, like so:"
-echo "   crontab -e"
-echo "   And add:"
-echo "   0 * * * * /path/to/your/copy.sh # Adjust schedule as needed"
+echo "3. To automate the archiving process, consider setting up a cron job for ytAuto!"
 echo ""
 echo "Thank you for using kclamberth/yt-dlp-auto-updater!"
 echo -e "${RESET}"
 
-rm $(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)/install.sh
+rm "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"/install.sh
+rm "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"/ytAuto.c
