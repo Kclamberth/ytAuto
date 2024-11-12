@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <wait.h>
 
-#define YOUTUBE "Youtube"
+#define YOUTUBE "youtube"
 #define CHANNELS_FILE "/channels.txt"
 #define LOG_FILE "/lastupdated.txt"
 #define PERMISSIONS 0777
