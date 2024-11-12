@@ -276,7 +276,7 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  system("./ytAutoBot.sh &");
+  system("./ytDiscordBot.sh &");
   printf("Finished updating channels.\n");
 
   return 0;
