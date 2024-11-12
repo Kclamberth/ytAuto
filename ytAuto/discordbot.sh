@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BASE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-YOUTUBE_DIR="${BASE_DIR}/Youtube"
+YOUTUBE_DIR="${BASE_DIR}/youtube"
 UPDATE_DATE=$(TZ='America/Los_Angeles' date '+%b-%d-%Y')
 WEBHOOK_URL='{INSERT_WEBHOOK_URL}'
 
