@@ -31,10 +31,10 @@ echo -e "${GREEN}All required dependencies are installed.${RESET}"
 
 echo "Downloading scripts..."
 curl -o "${BASE_DIR}/ytAuto.c" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/refs/heads/main/ytAuto/ytAuto.c"
-curl -o "${BASE_DIR}/discordbot.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/refs/heads/main/ytAuto/discordbot.sh"
+curl -o "${BASE_DIR}/ytAutoBot.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/refs/heads/main/ytAuto/ytAutoBot.sh"
 echo -e "${GREEN}Scripts downloaded.${RESET}"
 
-chmod +x "${BASE_DIR}/discordbot.sh"
+chmod +x "${BASE_DIR}/ytAutoBot.sh"
 gcc -o ytAuto ytAuto.c
 
 # Final instructions
@@ -44,7 +44,7 @@ echo ""
 echo "1. Edit ${YOUTUBE_DIR}/channels.txt and add YouTube channel links in the format:"
 echo "   https://www.youtube.com/@exampleone"
 echo ""
-echo "2. Edit ${BASE_DIR}/discordbot.sh and insert your Discord webhook URL where indicated."
+echo "2. Edit ${BASE_DIR}/ytAutoBot.sh and insert your Discord webhook URL where indicated."
 echo ""
 echo "3. To automate the archiving process, consider setting up a cron job for ytAuto!"
 echo ""
