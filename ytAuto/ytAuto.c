@@ -1,4 +1,5 @@
 #include <dirent.h>
+#include <libgen.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,6 +11,7 @@
 #define YOUTUBE "youtube"
 #define CHANNELS_FILE "/channels.txt"
 #define LOG_FILE "/lastupdated.txt"
+#define DISCORD "./ytDiscordBot.sh &"
 #define PERMISSIONS 0777
 #define TIME_OUTPUT_SIZE 50
 #define LOG_MESSAGE_SIZE 1024
@@ -20,7 +22,7 @@ int youtube_dir(char *working_dir) {
   struct stat st = {0};
   if (stat(working_dir, &st) == -1) {
     // create youtube dir if not found
-    int create_youtube_dir = mkdir(YOUTUBE, PERMISSIONS);
+    int create_youtube_dir = mkdir(working_dir, PERMISSIONS);
     if (create_youtube_dir != 0) {
       perror("Error making youtube directory\n");
       return -1;
@@ -242,12 +244,18 @@ int main(int argc, char **argv) {
   char working_dir[PATH_MAX];
   char channels_path[PATH_MAX];
   char log_path[PATH_MAX];
+  char discord_path[PATH_MAX];
 
-  // Create working dir path
-  if (getcwd(working_dir, sizeof(working_dir)) == NULL) {
+  // Grab script's dir
+  if (readlink("/proc/self/exe", working_dir, sizeof(working_dir) - 1) == -1) {
     perror("Error getting working directory");
+    return -1;
   } else {
+    // set up paths
+    strcpy(working_dir, dirname(working_dir));
     strcat(working_dir, "/");
+    strcpy(discord_path, working_dir);
+    strcat(discord_path, DISCORD);
     strcat(working_dir, YOUTUBE);
   }
 
@@ -276,7 +284,7 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  system("./ytDiscordBot.sh &");
+  system(discord_path);
   printf("Finished updating channels.\n");
 
   return 0;
