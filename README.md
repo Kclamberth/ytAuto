@@ -9,7 +9,9 @@ For use in jellyfin, I have the program in the parent directory of shows (/media
 
 ## Arguments
 ```ytAuto -a {argument}```: Add a channel to the channel list, channel argument must be in https://www.youtube.com/@{channel_name} format.
+
 ```ytAuto -r {argument}```: Remove a channel from the channel list. Argument must be exact match to item on channel list.
+
 ```ytAuto -l```: List the current tracked channels
 
 ## How it Works
