@@ -7,6 +7,11 @@ For use in jellyfin, I have the program in the parent directory of shows (/media
 
 **The first time you run this program, you need to run it from the directory you intend the youtube directory to be (EX. I ran it from /media the first time), this is because all the subdirectories will be created in that directory!**
 
+## Arguments
+ytAuto -a {argument}: Add a channel to the channel list, channel argument must be in https://www.youtube.com/@{channel_name} format.
+ytAuto -r {argument}: Remove a channel from the channel list. Argument must be exact match to item on channel list.
+ytAuto -l: List the current tracked channels
+
 ## How it Works
 
 This C script manages YouTube channel content efficiently by creating and updating directory structures for each channel, leveraging parallel processing to run multiple yt-dlp download tasks simultaneously. It creates subdirectories for each channel, monitors file counts to detect new content, and logs updates in a lastupdated.txt file. To ensure reliability, the script checks for and creates necessary files and directories (channels.txt and Youtube) if missing. Note: For user notifications, the script can call an external Bash script to send updates to a Discord webhook, providing real-time information on channel activities.
