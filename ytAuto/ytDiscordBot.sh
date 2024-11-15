@@ -3,10 +3,10 @@
 BASE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 YOUTUBE_DIR="${BASE_DIR}/youtube"
 UPDATE_DATE=$(TZ='America/Los_Angeles' date '+%b-%d-%Y')
-WEBHOOK_URL='{INSERT_WEBHOOK_URL}'
+WEBHOOK_URL='https://discord.com/api/webhooks/1176388899782807582/NQ1VVWZDMBgxbZMaFXwcyE4jrSbEYgC78yAOApUZa3rOoprXZB7_qWFvtuqgoLJm-u5W'
 
 # Read updates into an array
-IFS=$'\n' read -d '' -r -a updates < <(cat "$YOUTUBE_DIR"/lastupdated.txt | tail -n"$(grep -cv '^$' "$YOUTUBE_DIR"/channels.txt)" | grep "archived" && printf '\0')
+IFS=$'\n' read -d '' -r -a updates < <(cat "$YOUTUBE_DIR"/.lastupdated.log | tail -n"$(grep -cv '^$' "$YOUTUBE_DIR"/.channels.list)" | grep "archived" && printf '\0')
 
 if [ ${#updates[@]} -eq 0 ]; then
     # No updates found
