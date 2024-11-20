@@ -3,7 +3,7 @@
 BASE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 YOUTUBE_DIR="${BASE_DIR}/youtube"
 
-#colors
+# colors
 GREEN='\e[32m'
 RED='\e[31m'
 YELLOW='\e[33m'
@@ -37,7 +37,7 @@ echo -e "${GREEN}Scripts downloaded.${RESET}"
 chmod +x "${BASE_DIR}/ytDiscordBot.sh"
 gcc -o ytAuto ytAuto.c
 
-# Final instructions
+# final instructions
 echo -e "${YELLOW}"
 echo "Setup is complete! Here are the next steps:"
 echo ""
@@ -47,5 +47,5 @@ echo "3.) Run the program via ./ytAuto"
 echo "Thank you for using kclamberth/yt-dlp-auto-updater!"
 echo -e "${RESET}"
 
-rm "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"/install.sh
+# clean up
 rm "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"/ytAuto.c
