@@ -13,6 +13,7 @@ RESET='\e[0m'
 dependencies=(yt-dlp jq curl bash)
 missing_dependencies=0
 
+echo ""
 echo "Checking for required dependencies..."
 for dep in "${dependencies[@]}"; do
     if ! command -v "$dep" &> /dev/null; then
@@ -27,7 +28,7 @@ if [ $missing_dependencies -ne 0 ]; then
 fi
 
 echo -e "${GREEN}All required dependencies are installed.${RESET}"
-
+echo ""
 
 echo "Downloading scripts..."
 curl -o "${BASE_DIR}/ytAuto.c" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/refs/heads/main/ytAuto/ytAuto.c"
