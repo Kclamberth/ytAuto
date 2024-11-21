@@ -14,7 +14,6 @@ if [ ${#updates[@]} -eq 0 ]; then
 else
     # Process updates to format as requested
     for i in "${!updates[@]}"; do
-        echo "${updates[i]}"
         updates[i]=$(echo "${updates[i]}" | sed 's/\[[0-9]*-[0-9]*-[0-9]* \([0-9]*:[0-9]*:[0-9]*\)\]/[\1]/')
     done
 
