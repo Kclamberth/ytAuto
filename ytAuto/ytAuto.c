@@ -11,7 +11,7 @@
 
 #define YOUTUBE "youtube"
 #define CHANNELS_FILE "/.channels.list"
-#define LOG_FILE "/.lastupdated.log"
+#define LOG_FILE "/.channels.log"
 #define DISCORD "./ytDiscordBot.sh &"
 #define DELETE_CHANNEL "channels.list.tmp"
 #define LINK_STYLE "https://www.youtube.com/@"
@@ -254,10 +254,10 @@ void fork_process(char *full_link, char *channel_location, char *channel_name,
 
       // dir grew, update log file
       if (after_update > before_update) {
-        snprintf(log_message, sizeof(log_message), "%s: New content archived.",
-                 channel_name);
+        snprintf(log_message, sizeof(log_message),
+                 "[NEW] %s: Content archived.", channel_name);
       } else {
-        snprintf(log_message, sizeof(log_message), "%s: No new content.",
+        snprintf(log_message, sizeof(log_message), "[---] %s: No changes.",
                  channel_name);
       }
       log_line(log_file, log_message);
