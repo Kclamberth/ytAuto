@@ -18,7 +18,7 @@ For use in jellyfin, I have the program in the parent directory of shows (/media
 
 ## How it Works
 
-This C script manages YouTube channel content efficiently by creating and updating directory structures for each channel, leveraging parallel processing to run multiple yt-dlp download tasks simultaneously. It creates subdirectories for each channel, monitors file counts to detect new content, and logs updates in a lastupdated.txt file. To ensure reliability, the script checks for and creates necessary files and directories (channels.txt and Youtube) if missing. Note: For user notifications, the script can call an external Bash script to send updates to a Discord webhook, providing real-time information on channel activities.
+This C script manages YouTube channel content efficiently by creating and updating directory structures for each channel, leveraging parallel processing to run multiple yt-dlp download tasks simultaneously. It creates subdirectories for each channel, monitors file counts to detect new content, and logs updates in a `channels.log` file. To ensure reliability, the script checks for and creates necessary files and directories (`channels.list` and `youtube`) if missing. Note: For user notifications, the script can call an external Bash script to send updates to a Discord webhook, providing real-time information on channel activities.
 
 - **Directory and File Setup**: The script automatically creates a `youtube` directory in a specified base location (e.g., `/media/youtube`). Inside this directory, it initializes a `channels.list` file.
 
@@ -34,7 +34,7 @@ This setup allows for easy expansion or reduction of your archived content by me
 
 ### Optional Discord Notifications
 
-By using the optional `discordbot.sh` script, you can receive updates via Discord notifications. This script parses the `lastupdated.log` file to send a message about newly archived content or to notify when no new content has been detected. Configuration for Discord notifications involves setting up a webhook URL within the script.
+By using the optional `discordbot.sh` script, you can receive updates via Discord notifications. This script parses the `channels.log` file to send a message about newly archived content or to notify when no new content has been detected. Configuration for Discord notifications involves setting up a webhook URL within the script.
 
 **DEPENDENCIES**
 -------------------------------------------------------------------------------------------------------
