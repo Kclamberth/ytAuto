@@ -48,6 +48,6 @@ By using the optional `discordbot.sh` script, you can receive updates via Discor
   
 **INSTALLATION:**
 -----------------------------------------------------------------------------------------------------------
-To install and use, simply the command below.
+To install and use, simply run the command below.
 
 1.) ```curl https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/refs/heads/main/install.sh | bash```
