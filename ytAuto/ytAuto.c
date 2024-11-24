@@ -277,12 +277,12 @@ int create_file(char *working_dir, char *file_path, char *file_name) {
   // check if file exists
   if (access(file_path, F_OK) != 0) {
     // create file if not found
-    FILE *fd = fopen(file_path, "w");
-    if (fd == NULL) {
+    int fd = open(file_path, O_CREAT | O_WRONLY, 0666);
+    if (fd == -1) {
       perror("Error creating channels file.\n");
       return -1;
     } else {
-      fclose(fd);
+      close(fd);
     }
   }
   return 0;
@@ -298,7 +298,7 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path) {
 
   FILE *log_file = fopen(log_path, "a");
   if (log_file == NULL) {
-    perror("Error opening channels file.\n");
+    perror("Error opening log file.\n");
     fclose(channels_list);
     return -1;
   }
