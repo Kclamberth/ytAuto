@@ -1,4 +1,5 @@
 #include <dirent.h>
+#include <fcntl.h>
 #include <libgen.h>
 #include <linux/limits.h>
 #include <stdio.h>
@@ -7,7 +8,6 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include <wait.h>
 
 #define YOUTUBE "youtube"
@@ -17,6 +17,7 @@
 #define DELETE_CHANNEL "channels.list.tmp"
 #define LINK_STYLE "https://www.youtube.com/@"
 #define PERMISSIONS 0755
+#define FILE_PERMISSIONS 0666
 #define TIME_OUTPUT_SIZE 50
 #define LOG_MESSAGE_SIZE 1024
 #define RETRIES "20"
@@ -278,7 +279,7 @@ int create_file(char *working_dir, char *file_path, char *file_name) {
   // check if file exists
   if (access(file_path, F_OK) != 0) {
     // create file if not found
-    int fd = open(file_path, O_CREAT | O_WRONLY, 0666);
+    int fd = open(file_path, O_CREAT | O_WRONLY, FILE_PERMISSIONS);
     if (fd == -1) {
       perror("Error creating channels file.\n");
       return -1;
