@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <wait.h>
 
 #define YOUTUBE "youtube"
