@@ -17,7 +17,7 @@
 #define DELETE_CHANNEL "channels.list.tmp"
 #define LINK_STYLE "https://www.youtube.com/@"
 #define PERMISSIONS 0755
-#define FILE_PERMISSIONS 0666
+#define FILE_PERMISSIONS 0664
 #define TIME_OUTPUT_SIZE 50
 #define LOG_MESSAGE_SIZE 1024
 #define RETRIES "20"
