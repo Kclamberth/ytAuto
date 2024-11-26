@@ -38,13 +38,13 @@ By using the optional `discordbot.sh` script, you can receive updates via Discor
 
 **DEPENDENCIES**
 -------------------------------------------------------------------------------------------------------
-1.) yt-dlp
+1.) yt-dlp **(REQUIRED)**
 
-2.) ffmpeg
+2.) ffmpeg **(REQUIRED)**
 
-3.) jq
+3.) jq **(discord shell script)**
 
-4.) curl
+4.) curl **(discord shell script)**
   
 **INSTALLATION:**
 -----------------------------------------------------------------------------------------------------------
