@@ -14,7 +14,6 @@
 #define CHANNELS_FILE "/.channels.list"
 #define LOG_FILE "/.channels.log"
 #define DISCORD "./ytDiscordBot.sh &"
-#define DELETE_CHANNEL "channels.list.tmp"
 #define LINK_STYLE "https://www.youtube.com/@"
 #define PERMISSIONS 0755
 #define FILE_PERMISSIONS 0664
@@ -44,6 +43,8 @@ void ytdlp(char *full_link, char *channels_location) {
   full_link[strlen(full_link) - 1] = '\0';
   // yt-dlp github contains list of args
   char *arguments[] = {"yt-dlp",
+                       "--cookies",
+                       "../cookie.txt",
                        full_link,
                        "--embed-chapters",
                        "--embed-metadata",
@@ -169,9 +170,14 @@ int channel_delete(const char *channel_path, const char *message) {
     perror("Error writing to channel file\n");
     return -1;
   }
-  FILE *temp_file = fopen(DELETE_CHANNEL, "w");
+
+  // create tmp file to write to
+  char tmp_channel_path[PATH_MAX];
+  snprintf(tmp_channel_path, sizeof(tmp_channel_path), "%s.tmp", channel_path);
+
+  FILE *temp_file = fopen(tmp_channel_path, "w");
   if (temp_file == NULL) {
-    perror("Error writing to channel file\n");
+    perror("Error writing to temp channel file\n");
     fclose(channels_file);
     return -1;
   }
@@ -202,9 +208,8 @@ int channel_delete(const char *channel_path, const char *message) {
   fclose(temp_file);
   fclose(channels_file);
 
-  // delete original channel file, rename temp to channel file
-  remove(channel_path);
-  rename(DELETE_CHANNEL, channel_path);
+  // delete original channel file by rename temp to channel file
+  rename(tmp_channel_path, channel_path);
 
   free(buffer);
   channel_list(channel_path, "Updated");
