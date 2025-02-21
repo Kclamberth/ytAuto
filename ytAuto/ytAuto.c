@@ -43,8 +43,6 @@ void ytdlp(char *full_link, char *channels_location) {
   full_link[strlen(full_link) - 1] = '\0';
   // yt-dlp github contains list of args
   char *arguments[] = {"yt-dlp",
-                       "--cookies",
-                       "../cookie.txt",
                        full_link,
                        "--embed-chapters",
                        "--embed-metadata",
