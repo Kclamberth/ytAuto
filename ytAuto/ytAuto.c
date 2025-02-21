@@ -61,6 +61,8 @@ void ytdlp(char *full_link, char *channels_location) {
                        "archive.txt",
                        "--retries",
                        RETRIES,
+                       "--min-sleep-interval", "42",
+                       "--max-sleep-interval", "420",
                        NULL};
   execvp(arguments[0], arguments);
   perror("execvp failed.\n");
