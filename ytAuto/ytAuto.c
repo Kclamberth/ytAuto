@@ -43,6 +43,8 @@ void ytdlp(char *full_link, char *channels_location) {
   full_link[strlen(full_link) - 1] = '\0';
   // yt-dlp github contains list of args
   char *arguments[] = {"yt-dlp",
+                       "--cookies",
+                       "../cookies.txt"
                        full_link,
                        "--embed-chapters",
                        "--embed-metadata",
@@ -59,8 +61,9 @@ void ytdlp(char *full_link, char *channels_location) {
                        "archive.txt",
                        "--retries",
                        RETRIES,
-                       "--min-sleep-interval", "42",
-                       "--max-sleep-interval", "420",
+                       "--sleep-requests", "1.25",
+                       "--min-sleep-interval", "60",
+                       "--max-sleep-interval", "90",
                        NULL};
   execvp(arguments[0], arguments);
   perror("execvp failed.\n");
