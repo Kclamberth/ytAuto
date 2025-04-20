@@ -394,7 +394,6 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path,
 
     fork_process(full_link, channel_location, channel_name, log_file);
     free(full_link);
-    free(buffer);
 
     // Break out loop if only doing single
     if (single_link != NULL) {
