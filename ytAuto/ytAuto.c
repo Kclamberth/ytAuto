@@ -496,6 +496,7 @@ int main(int argc, char **argv) {
         if (i + 1 < argc) {
           validate_link(argv[i + 1]);
           channels_dir(working_dir, channels_path, log_path, argv[i + 1]);
+          channel_add(channels_path, argv[i + 1]);
           i++;
         } else {
           fprintf(stderr, "Error: Missing argument for '-s' or '--single'.\n");
