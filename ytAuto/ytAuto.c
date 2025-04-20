@@ -464,11 +464,6 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  // Check for channel file contents
-  if (is_empty(channels_path) != 0) {
-    return -1;
-  }
-
   // parse args
   if (argc > 1) {
     for (int i = 1; i < argc; i++) {
@@ -506,6 +501,10 @@ int main(int argc, char **argv) {
       }
     }
   } else {
+    // Check for channel file contents
+    if (is_empty(channels_path) != 0) {
+      return -1;
+    }
     // Use channel list to update channel dirs
     if (channels_dir(working_dir, channels_path, log_path, NULL) != 0) {
       return -1;
