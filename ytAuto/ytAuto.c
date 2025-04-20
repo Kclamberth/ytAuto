@@ -11,6 +11,7 @@
 #include <wait.h>
 
 #define YOUTUBE "youtube"
+#define OTHER "~other"
 #define CHANNELS_FILE "/.channels.list"
 #define LOG_FILE "/.channels.log"
 #define DISCORD "./ytDiscordBot.sh &"
@@ -29,6 +30,14 @@ int youtube_dir(char *working_dir) {
     int create_youtube_dir = mkdir(working_dir, PERMISSIONS);
     if (create_youtube_dir != 0) {
       perror("Error making youtube directory");
+      return -1;
+    }
+
+    char other_dir[PATH_MAX] = {0};
+    snprintf(other_dir, sizeof(other_dir), "%s/%s", working_dir, OTHER);
+    int create_other_dir = mkdir(other_dir, PERMISSIONS);
+    if (create_other_dir != 0) {
+      perror("Error making youtube/other directory");
       return -1;
     }
   }
@@ -331,18 +340,22 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path) {
 
     // grab channel name (@channel and /model/channel supported formats)
     char *channel_name = NULL;
-    if ((channel_name = strchr(buffer, '@')) != NULL) {
-      *channel_name = '/';
-      channel_name[strlen(channel_name) - 1] = '\0';
-      channel_name++;
+    char channel_location[PATH_MAX];
+    if ((channel_name = strstr(buffer, "@")) != NULL) {
+      channel_name += strlen("@");
+      buffer[strlen(buffer) - 1] = '\0';
+
+      // create channel dir path
+      snprintf(channel_location, PATH_MAX, "%s/%s", working_dir, channel_name);
+
     } else if ((channel_name = strstr(buffer, "/model/")) != NULL) {
       channel_name += strlen("/model");
       buffer[strlen(buffer) - 1] = '\0'; // remove newline
-    }
 
-    // create channel dir path
-    char channel_location[PATH_MAX];
-    snprintf(channel_location, PATH_MAX, "%s%s", working_dir, channel_name);
+      // create channel dir path
+      snprintf(channel_location, PATH_MAX, "%s/%s/%s", working_dir, OTHER,
+               channel_name);
+    }
 
     // Check for existing dir
     struct stat st = {0};
