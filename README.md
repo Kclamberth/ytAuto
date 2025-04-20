@@ -16,6 +16,8 @@ For use in jellyfin, I have the program in the parent directory of shows (/media
 
 ```ytAuto -r {argument}```: Remove a channel from the channel list. Argument must be exact match to item on channel list.
 
+```ytAuto -s {argument}```: Runs argument through the yt-dlp downloader, then appends it to the channel list for further tracking. Useful for when you have a cronjob already set up, but want to start archiving more videos without interfering with the upcoming cronjobs. 
+
 ## How it Works
 
 This C script manages YouTube channel content efficiently by creating and updating directory structures for each channel, leveraging parallel processing to run multiple yt-dlp download tasks simultaneously. It creates subdirectories for each channel, monitors file counts to detect new content, and logs updates in a `channels.log` file. To ensure reliability, the script checks for and creates necessary files and directories (`channels.list` and `youtube`) if missing. Note: For user notifications, the script can call an external Bash script to send updates to a Discord webhook, providing real-time information on channel activities.
