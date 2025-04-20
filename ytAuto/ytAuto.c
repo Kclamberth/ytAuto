@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
 #include <wait.h>
@@ -49,7 +50,10 @@ void ytdlp(char *full_link, char *channels_location) {
     perror("Error changing directories");
     _exit(-1);
   }
-  full_link[strlen(full_link) - 1] = '\0';
+  if (full_link[strlen(full_link) - 1] == '\n') {
+    full_link[strlen(full_link) - 1] = '\0';
+  }
+
   // yt-dlp github contains list of args
   char *arguments[] = {"yt-dlp",
                        "--match-filters",
@@ -126,16 +130,10 @@ int channel_list(const char *channel_path, const char *argument) {
   exit(0);
 }
 
-int channel_add(const char *channel_path, const char *message) {
-  FILE *channels_file = fopen(channel_path, "a+");
-  if (channels_file == NULL) {
-    perror("Error writing to channel file\n");
-    exit(-1);
-  }
-
+void validate_link(const char *link) {
   // copy arg link into array size of LINK STYLE
   char sub_link[PATH_MAX];
-  strncpy(sub_link, message, PATH_MAX - 1);
+  strncpy(sub_link, link, PATH_MAX - 1);
 
   // check link matches supported formats
   sub_link[strcspn(sub_link, "\n")] = 0;
@@ -145,6 +143,16 @@ int channel_add(const char *channel_path, const char *message) {
     fprintf(stderr, "Error: Invalid link format, check channels list.\n");
     exit(-1);
   }
+}
+
+int channel_add(const char *channel_path, const char *message) {
+  FILE *channels_file = fopen(channel_path, "a+");
+  if (channels_file == NULL) {
+    perror("Error writing to channel file\n");
+    exit(-1);
+  }
+
+  validate_link(message);
 
   // check if arg link already exists in channels file
   char *buffer = NULL;
@@ -312,7 +320,8 @@ int create_file(char *working_dir, char *file_path, char *file_name) {
   return 0;
 }
 
-int channels_dir(char *working_dir, char *channels_path, char *log_path) {
+int channels_dir(char *working_dir, char *channels_path, char *log_path,
+                 char *single_link) {
   // Read each line from channels_path
   FILE *channels_list = fopen(channels_path, "r");
   if (channels_list == NULL) {
@@ -328,12 +337,24 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path) {
   }
 
   char *buffer = NULL;
-  size_t buffer_size;
+  size_t buffer_size = 0;
   ssize_t line_length;
-  while ((line_length = getline(&buffer, &buffer_size, channels_list)) != -1) {
+
+  while (1) {
+    // Single link mode
+    if (single_link != NULL) {
+      buffer = strdup(single_link);
+      line_length = strlen(buffer);
+    } else {
+      // Channel list file mode
+      line_length = getline(&buffer, &buffer_size, channels_list);
+      if (line_length == -1)
+        break;
+    }
     // skip empties
-    if (line_length <= 1)
+    if (line_length <= 1) {
       continue;
+    }
 
     // grab full link for use in ytdlp below
     char *full_link = strdup(buffer);
@@ -343,7 +364,9 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path) {
     char channel_location[PATH_MAX];
     if ((channel_name = strstr(buffer, "@")) != NULL) {
       channel_name += strlen("@");
-      buffer[strlen(buffer) - 1] = '\0';
+      if (buffer[strlen(buffer) - 1] == '\n') {
+        buffer[strlen(buffer) - 1] = '\0';
+      }
 
       // create channel dir path
       snprintf(channel_location, PATH_MAX, "%s/%s", working_dir, channel_name);
@@ -371,6 +394,12 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path) {
 
     fork_process(full_link, channel_location, channel_name, log_file);
     free(full_link);
+    free(buffer);
+
+    // Break out loop if only doing single
+    if (single_link != NULL) {
+      break;
+    }
   }
 
   int status;
@@ -436,6 +465,11 @@ int main(int argc, char **argv) {
     return -1;
   }
 
+  // Check for channel file contents
+  if (is_empty(channels_path) != 0) {
+    return -1;
+  }
+
   // parse args
   if (argc > 1) {
     for (int i = 1; i < argc; i++) {
@@ -457,21 +491,25 @@ int main(int argc, char **argv) {
           fprintf(stderr, "Error: Missing argument for '-r.\n");
           return -1;
         }
+      } else if ((strcmp(argv[i], "-s") == 0) ||
+                 (strcmp(argv[i], "--single") == 0)) {
+        if (i + 1 < argc) {
+          validate_link(argv[i + 1]);
+          channels_dir(working_dir, channels_path, log_path, argv[i + 1]);
+          i++;
+        } else {
+          fprintf(stderr, "Error: Missing argument for '-s' or '--single'.\n");
+        }
       } else {
         fprintf(stderr, "Error: unknown argument usage '%s'.\n", argv[i]);
         return -1;
       }
     }
-  }
-
-  // Check for channel file contents
-  if (is_empty(channels_path) != 0) {
-    return -1;
-  }
-
-  // Check for / create / update channel dirs
-  if (channels_dir(working_dir, channels_path, log_path) != 0) {
-    return -1;
+  } else {
+    // Use channel list to update channel dirs
+    if (channels_dir(working_dir, channels_path, log_path, NULL) != 0) {
+      return -1;
+    }
   }
 
   system(discord_path);
