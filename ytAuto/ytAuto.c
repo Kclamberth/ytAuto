@@ -43,9 +43,10 @@ void ytdlp(char *full_link, char *channels_location) {
   full_link[strlen(full_link) - 1] = '\0';
   // yt-dlp github contains list of args
   char *arguments[] = {"yt-dlp",
-                       "--match-filters", "height>=?720",
+                       "--match-filters",
+                       "height>=?720",
                        "--cookies",
-                       "../cookies.txt"
+                       "../cookies.txt",
                        full_link,
                        "--embed-chapters",
                        "--embed-metadata",
@@ -62,9 +63,12 @@ void ytdlp(char *full_link, char *channels_location) {
                        "archive.txt",
                        "--retries",
                        RETRIES,
-                       "--sleep-requests", "1.25",
-                       "--min-sleep-interval", "60",
-                       "--max-sleep-interval", "90",
+                       "--sleep-requests",
+                       "1.25",
+                       "--min-sleep-interval",
+                       "60",
+                       "--max-sleep-interval",
+                       "90",
                        NULL};
   execvp(arguments[0], arguments);
   perror("execvp failed.\n");
@@ -121,15 +125,15 @@ int channel_add(const char *channel_path, const char *message) {
   }
 
   // copy arg link into array size of LINK STYLE
-  char sub_link[sizeof(LINK_STYLE)];
-  strncpy(sub_link, message, sizeof(LINK_STYLE) - 1);
-  sub_link[sizeof(sub_link) - 1] = '\0';
+  char sub_link[PATH_MAX];
+  strncpy(sub_link, message, PATH_MAX - 1);
 
-  // check if arg link matches LINK STYLE format
-  if (strcmp(LINK_STYLE, sub_link) != 0) {
-    fprintf(
-        stderr,
-        "Error: Use link format 'https://www.youtube.com/@{channel_name}'\n");
+  // check link matches supported formats
+  sub_link[strcspn(sub_link, "\n")] = 0;
+  int is_youtube = strncmp(sub_link, LINK_STYLE, strlen(LINK_STYLE)) == 0;
+  int is_model = strstr(sub_link, "/model/") != NULL;
+  if (!is_youtube && !is_model) {
+    fprintf(stderr, "Error: Invalid link format, check channels list.\n");
     exit(-1);
   }
 
@@ -324,17 +328,21 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path) {
 
     // grab full link for use in ytdlp below
     char *full_link = strdup(buffer);
-    // find first occurence of '@'
-    char *channel_name = strchr(buffer, '@');
 
-    // replace '@' with '/'
-    *channel_name = '/';
-    channel_name[strlen(channel_name) - 1] = '\0';
-    char channel_location[PATH_MAX];
+    // grab channel name (@channel and /model/channel supported formats)
+    char *channel_name = NULL;
+    if ((channel_name = strchr(buffer, '@')) != NULL) {
+      *channel_name = '/';
+      channel_name[strlen(channel_name) - 1] = '\0';
+      channel_name++;
+    } else if ((channel_name = strstr(buffer, "/model/")) != NULL) {
+      channel_name += strlen("/model");
+      buffer[strlen(buffer) - 1] = '\0'; // remove newline
+    }
 
     // create channel dir path
+    char channel_location[PATH_MAX];
     snprintf(channel_location, PATH_MAX, "%s%s", working_dir, channel_name);
-    channel_name++;
 
     // Check for existing dir
     struct stat st = {0};
