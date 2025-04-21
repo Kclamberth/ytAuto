@@ -48,7 +48,7 @@ gcc -o ytAuto ytAuto.c
 echo -e "${YELLOW}"
 echo "Setup is complete! Here are the next steps:"
 echo ""
-echo "1.) Edit '${BASE_DIR}/ytDiscordBot.sh' and insert your Discord webhook URL where indicated (If using discord)."
+echo "1.) Edit '${BASE_DIR}/ytDiscordBot.sh' and insert your Discord webhook URL where indicated (if using optional discord bot)."
 echo "2.) Use './ytAuto -a https://www.youtube.com/@{channel_name}' to track a channel."
 echo "3.) Run the program via './ytAuto'"
 echo "Thank you for using kclamberth/yt-dlp-auto-updater!"
