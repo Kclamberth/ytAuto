@@ -55,4 +55,5 @@ echo "Thank you for using kclamberth/yt-dlp-auto-updater!"
 echo -e "${RESET}"
 
 # clean up
-rm "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"/ytAuto.c
+rm "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"/ytAuto.c || exit
+rm "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"/install.sh || exit
