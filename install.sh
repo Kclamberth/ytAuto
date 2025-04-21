@@ -29,10 +29,17 @@ fi
 
 echo -e "${GREEN}All required dependencies are installed.${RESET}"
 echo ""
+echo -e "${YELLOW}Do you want to use the discord notification bot? (y/n)${RESET}"
+read input
+while [[ "$input" != "y" && "$input" != "n" ]]; do
+  read -p "Enter (y/n): " input
+done
 
 echo "Downloading scripts..."
 curl -o "${BASE_DIR}/ytAuto.c" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/refs/heads/main/ytAuto/ytAuto.c"
-curl -o "${BASE_DIR}/ytDiscordBot.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/refs/heads/main/ytAuto/ytDiscordBot.sh"
+if [ "$input" == 'y' ]; then
+    curl -o "${BASE_DIR}/ytDiscordBot.sh" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/refs/heads/main/ytAuto/ytDiscordBot.sh"
+fi
 echo -e "${GREEN}Scripts downloaded.${RESET}"
 
 chmod +x "${BASE_DIR}/ytDiscordBot.sh"
@@ -42,7 +49,7 @@ gcc -o ytAuto ytAuto.c
 echo -e "${YELLOW}"
 echo "Setup is complete! Here are the next steps:"
 echo ""
-echo "1.) Edit '${BASE_DIR}/ytDiscordBot.sh' and insert your Discord webhook URL where indicated."
+echo "1.) Edit '${BASE_DIR}/ytDiscordBot.sh' and insert your Discord webhook URL where indicated (If using discord)."
 echo "2.) Use './ytAuto -a https://www.youtube.com/@{channel_name}' to track a channel."
 echo "3.) Run the program via './ytAuto'"
 echo "Thank you for using kclamberth/yt-dlp-auto-updater!"
