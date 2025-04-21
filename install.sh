@@ -29,10 +29,12 @@ fi
 
 echo -e "${GREEN}All required dependencies are installed.${RESET}"
 echo ""
-echo -e "${YELLOW}Do you want to use the discord notification bot? (y/n)${RESET}"
-read input
-while [[ "$input" != "y" && "$input" != "n" ]]; do
-  read -p "Enter (y/n): " input
+while true; do
+  read -p "Do you want to use the discord notification bot? (y/n): " input
+  if [[ "$input" == "y" || "$input" == "n" ]]; then
+    break
+  fi
+  echo "Invalid input. Please enter y or n."
 done
 
 echo "Downloading scripts..."
