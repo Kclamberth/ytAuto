@@ -29,13 +29,11 @@ fi
 
 echo -e "${GREEN}All required dependencies are installed.${RESET}"
 echo ""
-while true; do
-  read -p "Do you want to use the discord notification bot? (y/n): " input
-  if [[ "$input" == "y" || "$input" == "n" ]]; then
-    break
-  fi
-  echo "Invalid input. Please enter y or n."
-done
+read -p "Do you want to use the discord notification bot? (y/n): " input
+if [[ "$input" != "y" && "$input" != "n" ]]; then
+    echo "Invalid input. Please enter y or n."
+    read -p "Do you want to use the discord notification bot? (y/n): " input
+fi
 
 echo "Downloading scripts..."
 curl -o "${BASE_DIR}/ytAuto.c" "https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/refs/heads/main/ytAuto/ytAuto.c"
