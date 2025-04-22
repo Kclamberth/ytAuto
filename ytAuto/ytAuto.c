@@ -24,24 +24,27 @@
 #define RETRIES "20"
 
 int youtube_dir(char *working_dir) {
-  // Check for youtube dir
   struct stat st = {0};
+
+  // youtube dir
   if (stat(working_dir, &st) == -1) {
-    // create youtube dir if not found
-    int create_youtube_dir = mkdir(working_dir, PERMISSIONS);
-    if (create_youtube_dir != 0) {
+    if (mkdir(working_dir, PERMISSIONS) != 0) {
       perror("Error making youtube directory");
       return -1;
     }
+  }
 
-    char other_dir[PATH_MAX] = {0};
-    snprintf(other_dir, sizeof(other_dir), "%s/%s", working_dir, OTHER);
-    int create_other_dir = mkdir(other_dir, PERMISSIONS);
-    if (create_other_dir != 0) {
+  // youtube/other dir
+  char other_dir[PATH_MAX] = {0};
+  snprintf(other_dir, sizeof(other_dir), "%s/%s", working_dir, OTHER);
+
+  if (stat(other_dir, &st) == -1) {
+    if (mkdir(other_dir, PERMISSIONS) != 0) {
       perror("Error making youtube/other directory");
       return -1;
     }
   }
+
   return 0;
 }
 
@@ -464,6 +467,11 @@ int main(int argc, char **argv) {
     return -1;
   }
 
+  // Check for channel file contents
+  if (is_empty(channels_path) != 0) {
+    return -1;
+  }
+
   // parse args
   if (argc > 1) {
     for (int i = 1; i < argc; i++) {
@@ -501,10 +509,6 @@ int main(int argc, char **argv) {
       }
     }
   } else {
-    // Check for channel file contents
-    if (is_empty(channels_path) != 0) {
-      return -1;
-    }
     // Use channel list to update channel dirs
     if (channels_dir(working_dir, channels_path, log_path, NULL) != 0) {
       return -1;
