@@ -12,7 +12,7 @@
 #include <wait.h>
 
 #define YOUTUBE "youtube"
-#define OTHER "~other"
+#define OTHER "~Other"
 #define CHANNELS_FILE "/.channels.list"
 #define LOG_FILE "/.channels.log"
 #define DISCORD "./ytDiscordBot.sh &"
