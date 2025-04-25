@@ -431,6 +431,60 @@ int is_empty(char *channels_path) {
   return 0;
 }
 
+int notify(char *channels_path, char *log_path) {
+  // check log for NEW keyword
+  char *check_file;
+  asprintf(&check_file, "tail -$(cat %s | wc -l) %s | grep NEW", channels_path,
+           log_path);
+  FILE *file = popen(check_file, "r");
+
+  int has_new = 0;
+  char buffer[4096];
+  if (file) {
+    while (fgets(buffer, sizeof(buffer), file)) {
+      has_new = 1;
+      break;
+    }
+    pclose(file);
+  }
+
+  // NEW = Notify of updates, else no updates
+  char *curl_cmd;
+  if (has_new) {
+    asprintf(&curl_cmd,
+             "curl -H \"Title: Media Server Updated\" "
+             "-H \"Tags: white_check_mark\" "
+             "-d \"$(cat %s | "
+             "tail -$(cat %s | wc -l) | "
+             "grep NEW | awk -F ' ' '{ $1=\"[\"; print }' | "
+             "awk '{ sub(\" \", \"\"); print }')\" "
+             "{INSERT NTFY_URL}",
+             log_path, channels_path);
+
+    system(curl_cmd);
+    free(check_file);
+    free(curl_cmd);
+    return 0;
+  } else {
+    asprintf(&curl_cmd,
+             "curl -H \"Title: Media Server Updated\" "
+             "-H \"Tags: x\" "
+             "-d \"No new content found across $(cat %s | wc -l) channels.\" "
+             "{INSERT NTFY_URL}",
+             channels_path);
+
+    system(curl_cmd);
+    free(curl_cmd);
+    free(check_file);
+    return 0;
+  }
+
+  printf("No notifications setup.");
+  free(curl_cmd);
+  free(check_file);
+  return 1;
+}
+
 int main(int argc, char **argv) {
   // Setup working directory variables
   char temp_dir[PATH_MAX] = {0};
@@ -514,7 +568,7 @@ int main(int argc, char **argv) {
     }
   }
 
-  system(discord_path);
+  notify(channels_path, log_path);
   printf("Finished updating channels.\n");
 
   return 0;
