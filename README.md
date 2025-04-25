@@ -20,7 +20,7 @@ For use in jellyfin, I have the program in the parent directory of shows (/media
 
 ## How it Works
 
-This C script manages YouTube channel content efficiently by creating and updating directory structures for each channel, leveraging parallel processing to run multiple yt-dlp download tasks simultaneously. It creates subdirectories for each channel, monitors file counts to detect new content, and logs updates in a `channels.log` file. To ensure reliability, the script checks for and creates necessary files and directories (`channels.list` and `youtube`) if missing. Note: For user notifications, the script can call an external Bash script to send updates to a Discord webhook, providing real-time information on channel activities.
+This C script manages YouTube channel content efficiently by creating and updating directory structures for each channel, leveraging parallel processing to run multiple yt-dlp download tasks simultaneously. It creates subdirectories for each channel, monitors file counts to detect new content, and logs updates in a `channels.log` file. To ensure reliability, the script checks for and creates necessary files and directories (`channels.list` and `youtube`) if missing. Note: For user notifications, the script uses ntfy, providing real-time information on channel activities.
 
 - **Directory and File Setup**: The script automatically creates a `youtube` directory in a specified base location (e.g., `/media/youtube`). Inside this directory, it initializes a `channels.list` file.
 
@@ -34,9 +34,9 @@ This C script manages YouTube channel content efficiently by creating and updati
 
 This setup allows for easy expansion or reduction of your archived content by merely editing the `channels.list` file. Automated runs through cron jobs can ensure your media server remains up-to-date without manual intervention.
 
-### Optional Discord Notifications
+### Optional ntfy Notifications
 
-By using the optional `discordbot.sh` script, you can receive updates via Discord notifications. This script parses the `channels.log` file to send a message about newly archived content or to notify when no new content has been detected. Configuration for Discord notifications involves setting up a webhook URL within the script.
+Optionally, you can receive updates via ntfy notifications. This script parses the `channels.log` file to send a message about newly archived content or to notify when no new content has been detected. Configuration for ntfy notifications involves setting ntfy_URL within ytAuto.c.
 
 **DEPENDENCIES**
 -------------------------------------------------------------------------------------------------------
@@ -44,9 +44,9 @@ By using the optional `discordbot.sh` script, you can receive updates via Discor
 
 2.) ffmpeg **(REQUIRED)**
 
-3.) jq **(discord shell script)**
+3.) jq
 
-4.) curl **(discord shell script)**
+4.) curl 
   
 **INSTALLATION:**
 -----------------------------------------------------------------------------------------------------------
