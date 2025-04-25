@@ -17,6 +17,7 @@
 #define LOG_FILE "/.channels.log"
 #define DISCORD "./ytDiscordBot.sh &"
 #define LINK_STYLE "https://www.youtube.com/@"
+#define NTFY_URL "<REPLACE_ME>"
 #define PERMISSIONS 0755
 #define FILE_PERMISSIONS 0664
 #define TIME_OUTPUT_SIZE 50
@@ -458,8 +459,8 @@ int notify(char *channels_path, char *log_path) {
              "tail -$(cat %s | wc -l) | "
              "grep NEW | awk -F ' ' '{ $1=\"[\"; print }' | "
              "awk '{ sub(\" \", \"\"); print }')\" "
-             "{INSERT NTFY_URL}",
-             log_path, channels_path);
+             "%s",
+             log_path, channels_path,NTFY_URL);
 
     system(curl_cmd);
     free(check_file);
@@ -470,8 +471,8 @@ int notify(char *channels_path, char *log_path) {
              "curl -H \"Title: Media Server Updated\" "
              "-H \"Tags: x\" "
              "-d \"No new content found across $(cat %s | wc -l) channels.\" "
-             "{INSERT NTFY_URL}",
-             channels_path);
+             "%s",
+             channels_path,NTFY_URL);
 
     system(curl_cmd);
     free(curl_cmd);
