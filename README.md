@@ -20,7 +20,9 @@ For use in jellyfin, I have the program in the parent directory of shows (/media
 
 ## How it Works
 
-This C script manages YouTube channel content efficiently by creating and updating directory structures for each channel, leveraging parallel processing to run multiple yt-dlp download tasks simultaneously. It creates subdirectories for each channel, monitors file counts to detect new content, and logs updates in a `channels.log` file. To ensure reliability, the script checks for and creates necessary files and directories (`channels.list` and `youtube`) if missing. Note: For user notifications, the script uses ntfy, providing real-time information on channel activities.
+This C script manages YouTube channel content efficiently by creating and updating directory structures for each channel, leveraging parallel processing to run multiple yt-dlp download tasks simultaneously. It creates subdirectories for each channel, monitors file counts to detect new content, and logs updates in a `channels.log` file. To ensure reliability, the script checks for and creates necessary files and directories (`channels.list` and `youtube`) if missing. 
+
+Note: For user notifications, the script uses ntfy, providing real-time information on channel activities.
 
 - **Directory and File Setup**: The script automatically creates a `youtube` directory in a specified base location (e.g., `/media/youtube`). Inside this directory, it initializes a `channels.list` file.
 
