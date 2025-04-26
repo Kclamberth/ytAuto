@@ -11,11 +11,9 @@
 #include <unistd.h>
 #include <wait.h>
 
-#define YOUTUBE "youtube"
-#define OTHER "~Other"
+#define YOUTUBE "/youtube"
 #define CHANNELS_FILE "/.channels.list"
 #define LOG_FILE "/.channels.log"
-#define DISCORD "./ytDiscordBot.sh &"
 #define LINK_STYLE "https://www.youtube.com/@"
 #define NTFY_URL "<REPLACE_ME>"
 #define PERMISSIONS 0755
@@ -24,28 +22,16 @@
 #define LOG_MESSAGE_SIZE 1024
 #define RETRIES "20"
 
-int youtube_dir(char *working_dir) {
+int dir_exists(char *directory) {
   struct stat st = {0};
 
   // youtube dir
-  if (stat(working_dir, &st) == -1) {
-    if (mkdir(working_dir, PERMISSIONS) != 0) {
+  if (stat(directory, &st) == -1) {
+    if (mkdir(directory, PERMISSIONS) != 0) {
       perror("Error making youtube directory");
       return -1;
     }
   }
-
-  // youtube/other dir
-  char other_dir[PATH_MAX] = {0};
-  snprintf(other_dir, sizeof(other_dir), "%s/%s", working_dir, OTHER);
-
-  if (stat(other_dir, &st) == -1) {
-    if (mkdir(other_dir, PERMISSIONS) != 0) {
-      perror("Error making youtube/other directory");
-      return -1;
-    }
-  }
-
   return 0;
 }
 
@@ -59,34 +45,16 @@ void ytdlp(char *full_link, char *channels_location) {
   }
 
   // yt-dlp github contains list of args
-  char *arguments[] = {"yt-dlp",
-                       "--match-filters",
-                       "height>=?720",
-                       "--cookies",
-                       "../cookies.txt",
-                       full_link,
-                       "--embed-chapters",
-                       "--embed-metadata",
-                       "--write-thumbnail",
-                       "--output",
-                       "%(title)s.%(ext)s",
-                       "--convert-thumbnails",
-                       "webp",
-                       "-o",
-                       "thumbnail:%(title)s.%(ext)s",
-                       "-o",
-                       "pl_thumbnail:",
-                       "--download-archive",
-                       "archive.txt",
-                       "--retries",
-                       RETRIES,
-                       "--sleep-requests",
-                       "1.25",
-                       "--min-sleep-interval",
-                       "60",
-                       "--max-sleep-interval",
-                       "90",
-                       NULL};
+  char *arguments[] = {
+      "yt-dlp",
+      //"--match-filters",
+      //"height>=?720",
+      "--cookies", "../cookies.txt", full_link, "--embed-chapters",
+      "--embed-metadata", "--write-thumbnail", "--output", "%(title)s.%(ext)s",
+      "--convert-thumbnails", "webp", "-o", "thumbnail:%(title)s.%(ext)s", "-o",
+      "pl_thumbnail:", "--download-archive", "archive.txt", "--retries",
+      RETRIES, "--sleep-requests", "1.25", "--min-sleep-interval", "60",
+      "--max-sleep-interval", "90", NULL};
   execvp(arguments[0], arguments);
   perror("execvp failed.\n");
   _exit(-1);
@@ -142,8 +110,7 @@ void validate_link(const char *link) {
   // check link matches supported formats
   sub_link[strcspn(sub_link, "\n")] = 0;
   int is_youtube = strncmp(sub_link, LINK_STYLE, strlen(LINK_STYLE)) == 0;
-  int is_model = strstr(sub_link, "/model/") != NULL;
-  if (!is_youtube && !is_model) {
+  if (!is_youtube) {
     fprintf(stderr, "Error: Invalid link format, check channels list.\n");
     exit(-1);
   }
@@ -306,9 +273,9 @@ void fork_process(char *full_link, char *channel_location, char *channel_name,
   }
 }
 
-int create_file(char *working_dir, char *file_path, char *file_name) {
+int file_exists(char *directory, char *file_path, char *file_name) {
   // create path to file
-  snprintf(file_path, PATH_MAX, "%s%s", working_dir, file_name);
+  snprintf(file_path, PATH_MAX, "%s%s", directory, file_name);
 
   // check if file exists
   if (access(file_path, F_OK) != 0) {
@@ -324,10 +291,10 @@ int create_file(char *working_dir, char *file_path, char *file_name) {
   return 0;
 }
 
-int channels_dir(char *working_dir, char *channels_path, char *log_path,
+int channels_dir(char *youtube_dir, char *list_path, char *log_path,
                  char *single_link) {
-  // Read each line from channels_path
-  FILE *channels_list = fopen(channels_path, "r");
+  // Read each line from list_path
+  FILE *channels_list = fopen(list_path, "r");
   if (channels_list == NULL) {
     perror("Error opening channels file.\n");
     return -1;
@@ -363,7 +330,7 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path,
     // grab full link for use in ytdlp below
     char *full_link = strdup(buffer);
 
-    // grab channel name (@channel and /model/channel supported formats)
+    // grab channel name (@channel supported format)
     char *channel_name = NULL;
     char channel_location[PATH_MAX];
     if ((channel_name = strstr(buffer, "@")) != NULL) {
@@ -373,15 +340,7 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path,
       }
 
       // create channel dir path
-      snprintf(channel_location, PATH_MAX, "%s/%s", working_dir, channel_name);
-
-    } else if ((channel_name = strstr(buffer, "/model/")) != NULL) {
-      channel_name += strlen("/model/");
-      buffer[strlen(buffer) - 1] = '\0'; // remove newline
-
-      // create channel dir path
-      snprintf(channel_location, PATH_MAX, "%s/%s/%s", working_dir, OTHER,
-               channel_name);
+      snprintf(channel_location, PATH_MAX, "%s/%s", youtube_dir, channel_name);
     }
 
     // Check for existing dir
@@ -415,9 +374,9 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path,
   return 0;
 }
 
-int is_empty(char *channels_path) {
+int is_empty(char *list_path) {
   struct stat st;
-  if (stat(channels_path, &st) != 0) {
+  if (stat(list_path, &st) != 0) {
     perror("Error checking channels file.\n");
     return -1;
   } else {
@@ -432,10 +391,10 @@ int is_empty(char *channels_path) {
   return 0;
 }
 
-int notify(char *channels_path, char *log_path) {
+int notify(char *list_path, char *log_path) {
   // check log for NEW keyword
   char *check_file;
-  asprintf(&check_file, "tail -$(cat %s | wc -l) %s | grep NEW", channels_path,
+  asprintf(&check_file, "tail -$(cat %s | wc -l) %s | grep NEW", list_path,
            log_path);
   FILE *file = popen(check_file, "r");
 
@@ -460,7 +419,7 @@ int notify(char *channels_path, char *log_path) {
              "grep NEW | awk -F ' ' '{ $1=\"[\"; print }' | "
              "awk '{ sub(\" \", \"\"); print }')\" "
              "%s",
-             log_path, channels_path,NTFY_URL);
+             log_path, list_path, NTFY_URL);
 
     system(curl_cmd);
     free(check_file);
@@ -472,7 +431,7 @@ int notify(char *channels_path, char *log_path) {
              "-H \"Tags: x\" "
              "-d \"No new content found across $(cat %s | wc -l) channels.\" "
              "%s",
-             channels_path,NTFY_URL);
+             list_path, NTFY_URL);
 
     system(curl_cmd);
     free(curl_cmd);
@@ -489,10 +448,9 @@ int notify(char *channels_path, char *log_path) {
 int main(int argc, char **argv) {
   // Setup working directory variables
   char temp_dir[PATH_MAX] = {0};
-  char working_dir[PATH_MAX] = {0};
-  char channels_path[PATH_MAX] = {0};
+  char youtube_dir[PATH_MAX] = {0};
+  char list_path[PATH_MAX] = {0};
   char log_path[PATH_MAX] = {0};
-  char discord_path[PATH_MAX] = {0};
 
   // Grab script's dir
   if (readlink("/proc/self/exe", temp_dir, sizeof(temp_dir) - 1) == -1) {
@@ -500,44 +458,41 @@ int main(int argc, char **argv) {
     return -1;
   } else {
     // set up paths
-    strcpy(working_dir, dirname(temp_dir));
-    strcat(working_dir, "/");
-    strcpy(discord_path, working_dir);
-    strcat(discord_path, DISCORD);
-    strcat(working_dir, YOUTUBE);
+    strcpy(youtube_dir, dirname(temp_dir));
+    strcat(youtube_dir, YOUTUBE);
   }
 
   // Check for / create youtube dir
-  if (youtube_dir(working_dir) != 0) {
+  if (dir_exists(youtube_dir) != 0) {
     return -1;
   }
 
   // Check for / create channels file
-  if (create_file(working_dir, channels_path, CHANNELS_FILE) != 0) {
+  if (file_exists(youtube_dir, list_path, CHANNELS_FILE) != 0) {
     return -1;
   }
 
   // Check for / create log file
-  if (create_file(working_dir, log_path, LOG_FILE) != 0) {
+  if (file_exists(youtube_dir, log_path, LOG_FILE) != 0) {
     return -1;
   }
 
   // parse args
   if (argc > 1) {
     for (int i = 1; i < argc; i++) {
-      if (strcmp(argv[i], "-l") == 0 && is_empty(channels_path) == 0) {
-        channel_list(channels_path, "Current");
+      if (strcmp(argv[i], "-l") == 0 && is_empty(list_path) == 0) {
+        channel_list(list_path, "Current");
       } else if (strcmp(argv[i], "-a") == 0) {
         if (i + 1 < argc) {
-          channel_add(channels_path, argv[i + 1]);
+          channel_add(list_path, argv[i + 1]);
           i++;
         } else {
           fprintf(stderr, "Error: Missing argument for '-a'.\n");
           return -1;
         }
-      } else if (strcmp(argv[i], "-r") == 0 && is_empty(channels_path) == 0) {
+      } else if (strcmp(argv[i], "-r") == 0 && is_empty(list_path) == 0) {
         if (i + 1 < argc) {
-          channel_delete(channels_path, argv[i + 1]);
+          channel_delete(list_path, argv[i + 1]);
           i++;
         } else {
           fprintf(stderr, "Error: Missing argument for '-r.\n");
@@ -547,8 +502,8 @@ int main(int argc, char **argv) {
                  (strcmp(argv[i], "--single") == 0)) {
         if (i + 1 < argc) {
           validate_link(argv[i + 1]);
-          channels_dir(working_dir, channels_path, log_path, argv[i + 1]);
-          channel_add(channels_path, argv[i + 1]);
+          channels_dir(youtube_dir, list_path, log_path, argv[i + 1]);
+          channel_add(list_path, argv[i + 1]);
           i++;
         } else {
           fprintf(stderr, "Error: Missing argument for '-s' or '--single'.\n");
@@ -560,16 +515,16 @@ int main(int argc, char **argv) {
     }
   } else {
     // Check for channel file contents
-    if (is_empty(channels_path) != 0) {
+    if (is_empty(list_path) != 0) {
       return -1;
     }
     // Use channel list to update channel dirs
-    if (channels_dir(working_dir, channels_path, log_path, NULL) != 0) {
+    if (channels_dir(youtube_dir, list_path, log_path, NULL) != 0) {
       return -1;
     }
   }
 
-  notify(channels_path, log_path);
+  notify(list_path, log_path);
   printf("Finished updating channels.\n");
 
   return 0;
