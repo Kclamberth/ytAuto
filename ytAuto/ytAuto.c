@@ -45,16 +45,34 @@ void ytdlp(char *full_link, char *channels_location) {
   }
 
   // yt-dlp github contains list of args
-  char *arguments[] = {
-      "yt-dlp",
-      //"--match-filters",
-      //"height>=?720",
-      "--cookies", "../cookies.txt", full_link, "--embed-chapters",
-      "--embed-metadata", "--write-thumbnail", "--output", "%(title)s.%(ext)s",
-      "--convert-thumbnails", "webp", "-o", "thumbnail:%(title)s.%(ext)s", "-o",
-      "pl_thumbnail:", "--download-archive", "archive.txt", "--retries",
-      RETRIES, "--sleep-requests", "1.25", "--min-sleep-interval", "60",
-      "--max-sleep-interval", "90", NULL};
+ char *arguments[] = {"yt-dlp",
+                       "--match-filters",
+                       "height>=?720",
+                       "--cookies",
+                       "../cookies.txt",
+                       full_link,
+                       "--embed-chapters",
+                       "--embed-metadata",
+                       "--write-thumbnail",
+                       "--output",
+                       "%(title)s.%(ext)s",
+                       "--convert-thumbnails",
+                       "webp",
+                       "-o",
+                       "thumbnail:%(title)s.%(ext)s",
+                       "-o",
+                       "pl_thumbnail:",
+                       "--download-archive",
+                       "archive.txt",
+                       "--retries",
+                       RETRIES,
+                       "--sleep-requests",
+                       "1.25",
+                       "--min-sleep-interval",
+                       "60",
+                       "--max-sleep-interval",
+                       "90",
+                       NULL};
   execvp(arguments[0], arguments);
   perror("execvp failed.\n");
   _exit(-1);
