@@ -376,7 +376,7 @@ int channels_dir(char *working_dir, char *channels_path, char *log_path,
       snprintf(channel_location, PATH_MAX, "%s/%s", working_dir, channel_name);
 
     } else if ((channel_name = strstr(buffer, "/model/")) != NULL) {
-      channel_name += strlen("/model");
+      channel_name += strlen("/model/");
       buffer[strlen(buffer) - 1] = '\0'; // remove newline
 
       // create channel dir path
