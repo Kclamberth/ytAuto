@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
       return -1;
     }
     // Use channel list to update channel dirs
-    if (run_channels(youtube_dir, list_path, log_path, NULL) != 0) {
+    if (run_channels(youtube_dir, list_path, log_path, NULL) == false) {
       return -1;
     }
 
