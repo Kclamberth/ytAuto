@@ -52,6 +52,6 @@ To install, clone the repo and run the makefile.
 
 1.) ```git clone https://github.com/Kclamberth/ytAuto```
 
-2.) ```cd ./ytAuto```
+2.) ```cd ./ytAuto/ytAuto```
 
 3.) ```make```
