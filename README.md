@@ -38,20 +38,20 @@ This setup allows for easy expansion or reduction of your archived content by me
 
 ### Optional ntfy Notifications
 
-Optionally, you can receive updates via ntfy notifications. This script parses the `channels.log` file to send a message about newly archived content or to notify when no new content has been detected. Configuration for ntfy notifications involves setting ntfy_URL within ytAuto.c.
+Optionally, you can receive updates via ntfy notifications. This script parses the `channels.log` file to send a message about newly archived content or to notify when no new content has been detected. Configuration for ntfy notifications involves setting ntfy_URL within ```config.h```.
 
 **DEPENDENCIES**
 -------------------------------------------------------------------------------------------------------
 1.) yt-dlp **(REQUIRED)**
 
 2.) ffmpeg **(REQUIRED)**
-
-3.) jq
-
-4.) curl 
   
 **INSTALLATION:**
 -----------------------------------------------------------------------------------------------------------
-To install and use, simply run the command below, otherwise clone the repo for the source file.
+To install, clone the repo and run the makefile.
 
-1.) ```curl https://raw.githubusercontent.com/Kclamberth/yt-dlp-auto-updater/refs/heads/main/install.sh -o install.sh && bash -i install.sh```
+1.) ```git clone https://github.com/Kclamberth/yt-dlp-auto-updater```
+
+2.) ```cd ./yt-dlp-auto-updater```
+
+3.) ```make```
