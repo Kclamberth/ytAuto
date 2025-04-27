@@ -1,4 +1,4 @@
-# yt-dlp-auto-updater
+# ytAuto
 This is a powerful terminal based C program for use in cron jobs to automate the task of downloading youtube videos via yt-dlp. 
 
 **NOTE:**
@@ -50,8 +50,8 @@ Optionally, you can receive updates via ntfy notifications. This script parses t
 -----------------------------------------------------------------------------------------------------------
 To install, clone the repo and run the makefile.
 
-1.) ```git clone https://github.com/Kclamberth/yt-dlp-auto-updater```
+1.) ```git clone https://github.com/Kclamberth/ytAuto```
 
-2.) ```cd ./yt-dlp-auto-updater```
+2.) ```cd ./ytAuto```
 
 3.) ```make```
