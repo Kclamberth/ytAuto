@@ -1,4 +1,4 @@
-# ytAuto
+# Kclamberth/ytAuto
 This is a powerful terminal based C program for use in cron jobs to automate the task of downloading youtube videos via yt-dlp. 
 
 **NOTE:**
