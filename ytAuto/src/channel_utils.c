@@ -1,3 +1,4 @@
+#include "../include/channel_utils.h"
 #include "../include/config.h"
 #include <linux/limits.h>
 #include <stdio.h>
@@ -5,6 +6,41 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+int load_channels(const char *list_path, ChannelEntry entries[],
+                  int *entryCount) {
+  // LOADS channels from channels.csv into program
+  FILE *channels_file = fopen(list_path, "r");
+  if (channels_file == NULL) {
+    perror("Error reading channels.csv");
+    return -1;
+  }
+
+  char line[MAX_LINE];
+  int count = 0;
+
+  while (fgets(line, sizeof(line), channels_file) != NULL) {
+    char *comma = strchr(line, ',');
+    if (!comma) {
+      continue;
+    }
+
+    *comma = '\0';
+    char *link = line;
+    char *dir_name = comma + 1;
+
+    // remove newline from dir_name
+    dir_name[strcspn(dir_name, "\r\n")] = '\0';
+
+    strncpy(entries[count].link, link, sizeof(entries[count].link));
+    strncpy(entries[count].dir_name, dir_name, sizeof(entries[count].dir_name));
+    count++;
+  }
+
+  fclose(channels_file);
+  *entryCount = count;
+  return 0;
+}
 
 int validate_link(const char *link) {
   // copy arg link into array size of LINK STYLE
