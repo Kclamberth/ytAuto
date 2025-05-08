@@ -15,6 +15,7 @@
 
 // Miscellaneous
 #define LOG_MSG_SIZE 1024
+#define MAX_LINE 1024
 #define TIME_OUTPUT_SIZE 50
 #define LINK_STYLE "https://www.youtube.com/@"
 
