@@ -19,12 +19,14 @@ int load_channels(const char *list_path, ChannelEntry entries[],
   char line[MAX_LINE];
   int count = 0;
 
+  // Read through all channels in channels_file
   while (fgets(line, sizeof(line), channels_file) != NULL) {
     char *comma = strchr(line, ',');
     if (!comma) {
       continue;
     }
 
+    // Split each line into 2 parts divided by comma
     *comma = '\0';
     char *link = line;
     char *dir_name = comma + 1;
@@ -32,6 +34,7 @@ int load_channels(const char *list_path, ChannelEntry entries[],
     // remove newline from dir_name
     dir_name[strcspn(dir_name, "\r\n")] = '\0';
 
+    // load into entries
     strncpy(entries[count].link, link, sizeof(entries[count].link));
     strncpy(entries[count].dir_name, dir_name, sizeof(entries[count].dir_name));
     count++;
@@ -51,7 +54,8 @@ int validate_link(const char *link) {
   sub_link[strcspn(sub_link, "\n")] = 0;
   int is_youtube = strncmp(sub_link, LINK_STYLE, strlen(LINK_STYLE)) == 0;
   if (!is_youtube) {
-    fprintf(stderr, "Error: Invalid link format, use %schannel\n", LINK_STYLE);
+    fprintf(stderr, "Error: Invalid link format, use %sexample.com\n",
+            LINK_STYLE);
     return -1;
   }
   return 0;
@@ -85,6 +89,7 @@ int channel_add(const char *list_path, const char *link) {
   }
 
   if (validate_link(link) != 0) {
+    fclose(channels_file);
     return -1;
   }
 
@@ -101,6 +106,11 @@ int channel_add(const char *list_path, const char *link) {
       buffer[line_length - 1] = '\0';
     }
 
+    // Get the link part before the comma
+    char *comma = strchr(buffer, ',');
+    if (comma)
+      *comma = '\0';
+
     if (strcmp(link, buffer) == 0) {
       fprintf(stderr, "%s already exists in the channel file.\n", link);
       free(buffer);
@@ -108,16 +118,40 @@ int channel_add(const char *list_path, const char *link) {
       return -1;
     }
   }
+  free(buffer);
 
-  // write to it channels if it passed validation
-  if (fprintf(channels_file, "%s\n", link) < 0) {
-    free(buffer);
+  // Suggest a default dir name
+  char defaultDir[256] = "channel";
+  const char *lastSlash = strrchr(link, '/');
+  const char *lastAt = strrchr(link, '@');
+  const char *lastPart = (lastAt > lastSlash) ? lastAt : lastSlash;
+
+  if (lastPart && *(lastPart + 1)) {
+    strncpy(defaultDir, lastPart + 1, sizeof(defaultDir) - 1);
+    char *c = strchr(defaultDir, '?');
+    if (c) {
+      *c = '\0';
+    }
+  }
+  printf("Suggested directory name: %s\n", defaultDir);
+  printf("Press Enter to accept, or type a new directory name: ");
+
+  // Take user input if given, use that as dir_name
+  char input[256];
+  if (fgets(input, sizeof(input), stdin) == NULL) {
     fclose(channels_file);
-    perror("Error writing to channel file\n");
+    return -1;
+  }
+  input[strcspn(input, "\r\n")] = '\0';
+  const char *dir_name = (*input) ? input : defaultDir;
+
+  if (fprintf(channels_file, "%s,%s\n", link, dir_name) < 0) {
+    perror("Error writing to channels file.");
+    fclose(channels_file);
     return -1;
   }
 
-  free(buffer);
+  fflush(channels_file);
   fclose(channels_file);
   channel_list(list_path, "Updated");
   return 0;

@@ -89,11 +89,13 @@ int main(int argc, char **argv) {
       } else if ((strcmp(argv[i], "-s") == 0) ||
                  (strcmp(argv[i], "--single") == 0)) {
         if (i + 1 < argc) {
+          if (channel_add(list_path, argv[i + 1]) != 0) {
+            return -1;
+          }
+
           if (run_channels(youtube_dir, list_path, log_path, argv[i + 1]) ==
-              true) {
-            if (channel_add(list_path, argv[i + 1]) != 0) {
-              return -1;
-            }
+              false) {
+            return -1;
           }
           notify(list_path, log_path);
           printf("Finished updating channels.\n");
