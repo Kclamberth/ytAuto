@@ -1,5 +1,8 @@
 #include "../include/file_system.h"
+#include "../include/config.h"
+#include <asm-generic/errno-base.h>
 #include <dirent.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <linux/limits.h>
 #include <stdio.h>
@@ -48,6 +51,29 @@ int count_files(const char *directory) {
   }
 
   closedir(dir);
+  return count;
+}
+
+int count_lines(const char *path) {
+  FILE *file = fopen(path, "r");
+  if (!file) {
+    // File doesn't exist yet
+    if (errno == ENOENT) {
+      return 0;
+    }
+
+    // Other errors
+    perror("File_system count_lines");
+    return -1;
+  }
+
+  int count = 0;
+  char line[MAX_LINE];
+  while (fgets(line, sizeof(line), file)) {
+    ++count;
+  }
+
+  fclose(file);
   return count;
 }
 
