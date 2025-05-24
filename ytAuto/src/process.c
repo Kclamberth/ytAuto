@@ -2,6 +2,8 @@
 #include "../include/file_system.h"
 #include "../include/log.h"
 #include "../include/ytdlp_download.h"
+#include <linux/limits.h>
+#include <stdio.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -15,6 +17,11 @@ void fork_process(const char *full_link, const char *channel_dir,
 
   // Child
   if (pid == 0) {
+    char archive_path[PATH_MAX];
+    snprintf(archive_path, sizeof(archive_path), "%s/%s", channel_dir,
+             ARCHIVE_FILE);
+    int before = count_lines(archive_path);
+
     pid_t ytdlp = fork();
     if (ytdlp == -1) {
       perror("process fork_process[child]");
@@ -27,10 +34,9 @@ void fork_process(const char *full_link, const char *channel_dir,
       _exit(0);
     }
 
-    // Child waits for grandchild to finish before checking numbers
-    int before = count_files(channel_dir);
+    // Child waits for grandchild to finish checking count again
     waitpid(ytdlp, NULL, 0);
-    int after = count_files(channel_dir);
+    int after = count_lines(archive_path);
 
     // Log message
     char msg[LOG_MSG_SIZE];
