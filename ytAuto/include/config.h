@@ -2,9 +2,10 @@
 #define CONFIG_H
 
 // Filesystem
-#define YT_SUBDIR "/youtube"
+#define YT_SUBDIR "youtube"
 #define CHANNELS_FILE ".channels.list"
 #define LOG_FILE ".channels.log"
+#define ARCHIVE_FILE "archive.txt"
 
 // Permissions
 #define DIR_PERMS 0755
