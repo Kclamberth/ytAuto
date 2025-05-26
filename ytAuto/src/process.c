@@ -40,9 +40,11 @@ void fork_process(const char *full_link, const char *channel_dir,
 
     // Log message
     char msg[LOG_MSG_SIZE];
-    snprintf(msg, sizeof msg, "%s %s: %s", after > before ? "[NEW]" : "[---]",
-             channel_name,
-             after > before ? "Content archived." : "No changes.");
+    if (after > before) {
+      snprintf(msg, sizeof msg, "[NEW] %s: %d video(s) archived.", channel_name, after - before);
+    } else {
+      snprintf(msg, sizeof msg, "[---] %s: No changes.", channel_name);
+    }
     log_line(log_file, msg);
     _exit(0);
   }
