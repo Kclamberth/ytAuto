@@ -85,8 +85,8 @@ To receive push notifications, configure the `NTFY_URL` in `config.h`:
 ## 📥 Installation
 To install, clone the repo and run the makefile.
 
-1.) ```git clone https://github.com/Kclamberth/ytAuto```
+1.) ```git clone https://github.com/Kclamberth/ytAuto && cd ./ytAuto```
 
-2.) ```cd ./ytAuto```
+2.) ```make```
 
-3.) ```make```
+3.) Add binary ```ytAuto``` to PATH.
