@@ -28,7 +28,7 @@ This will create a directory structure like:
 /media/
 ├── tvshows
 ├── movies
-└── youtube/
+└── youtube/            <--- ytAuto's working directory
     ├── examplechannel/
     ├── anotherchannel/
     ├── .channels.list
