@@ -1,6 +1,6 @@
 # Kclamberth/ytAuto
 
-**ytAuto** is a powerful terminal-based C program designed to automate the task of archiving YouTube videos using `yt-dlp`. Ideal for running via cron, this tool supports concurrent downloads, change detection, structured directory management, and optional push notifications.
+**ytAuto** is a powerful terminal-based C program designed to automate the task of archiving videos, primarily YouTube, using `yt-dlp`. Ideal for running via cron, this tool supports concurrent downloads, change detection, structured directory management, and optional push notifications.
 
 ## 🚀 Features
 
