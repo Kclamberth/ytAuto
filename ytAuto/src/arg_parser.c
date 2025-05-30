@@ -20,7 +20,7 @@ int arg_parser(int argc, char **argv, char **paths) {
     for (int i = 1; i < argc; i++) {
 
       // List
-      if (strcmp(argv[i], "-l") == 0) {
+      if ((strcmp(argv[i], "-l") == 0) || (strcmp(argv[i], "--list") == 0)) {
         if (is_empty(list_path) != 0) {
           return -1;
         }
@@ -29,20 +29,32 @@ int arg_parser(int argc, char **argv, char **paths) {
           return -1;
         }
 
+        // Log
+      } else if (strcmp(argv[i], "--log") == 0) {
+        if (is_empty(log_path) != 0) {
+          return -1;
+        }
+
+        if (channel_log(log_path, list_path) != 0) {
+          return -1;
+        }
+
         // Append
-      } else if (strcmp(argv[i], "-a") == 0) {
+      } else if ((strcmp(argv[i], "-a") == 0) ||
+                 (strcmp(argv[i], "--append") == 0)) {
         if (i + 1 < argc) {
           if (channel_add(list_path, argv[i + 1]) != 0) {
             return -1;
           }
           i++;
         } else {
-          fprintf(stderr, "Error: Missing argument for '-a'.\n");
+          fprintf(stderr, "Error: Missing argument for '-a' or '--append'.\n");
           return -1;
         }
 
         // Remove
-      } else if (strcmp(argv[i], "-r") == 0) {
+      } else if ((strcmp(argv[i], "-r") == 0) ||
+                 (strcmp(argv[i], "--remove") == 0)) {
         if (i + 1 < argc) {
           if (is_empty(list_path) != 0) {
             return -1;
@@ -53,7 +65,7 @@ int arg_parser(int argc, char **argv, char **paths) {
           }
           i++;
         } else {
-          fprintf(stderr, "Error: Missing argument for '-r'.\n");
+          fprintf(stderr, "Error: Missing argument for '-r' or '--remove'.\n");
           return -1;
         }
 

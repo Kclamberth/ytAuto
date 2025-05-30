@@ -1,5 +1,6 @@
 #include "../include/channel_utils.h"
 #include "../include/config.h"
+#include "../include/file_system.h"
 #include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,6 +59,46 @@ int validate_link(const char *link) {
             LINK_STYLE);
     return -1;
   }
+  return 0;
+}
+
+int channel_log(const char *log_path, const char *list_path) {
+  FILE *log_file = fopen(log_path, "r");
+  if (log_file == NULL) {
+    perror("Error reading log file\n");
+    return -1;
+  }
+  int count = count_lines(list_path);
+  char **lines = malloc(sizeof(char *) * count);
+  if (!lines) {
+    fclose(log_file);
+    return -1;
+  }
+
+  char *buffer = NULL;
+  size_t buffer_size;
+  ssize_t line_length;
+  int index = 0, total = 0;
+  while ((line_length = getline(&buffer, &buffer_size, log_file)) != -1) {
+    if (total < count) {
+      lines[total++] = strdup(buffer);
+    } else {
+      free(lines[index]);
+      lines[index] = strdup(buffer);
+    }
+    index = (index + 1) % count;
+  }
+
+  printf("Last logs:\n");
+  for (int i = 0; i < total; i++) {
+    int position = (index + i) % total;
+    printf("%s", lines[position]);
+    free(lines[position]);
+  }
+
+  free(lines);
+  free(buffer);
+  fclose(log_file);
   return 0;
 }
 
@@ -153,7 +194,7 @@ int channel_add(const char *list_path, const char *link) {
 
   fflush(channels_file);
   fclose(channels_file);
-  channel_list(list_path, "Updated");
+  channel_list(list_path, "\nUpdated");
   return 0;
 }
 

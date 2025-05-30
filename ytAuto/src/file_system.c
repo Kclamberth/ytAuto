@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <linux/limits.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
 int dir_exists(const char *directory, mode_t permissions) {
@@ -84,10 +85,7 @@ int is_empty(const char *file) {
     return -1;
   } else {
     if (st.st_size == 0) {
-      printf("Channels file is empty, please use './ytAuto -a "
-             "https://www.youtube.com/@{channel_name}' "
-             "to add a "
-             "channel.\n");
+      printf("WARNING: Empty file '%s'\n", file);
       return 1;
     }
   }
