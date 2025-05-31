@@ -44,6 +44,7 @@ ytAuto -a URL         # Adds a new channel by URL (format: any yt-dlp supported 
 ytAuto -r URL         # Removes a channel by URL (exact match required)
 ytAuto -s URL         # Downloads a single channel immediately and adds it to tracking
 ytAuto --log          # Displays the latest log entries (one per tracked channel)
+ytAuto -h             # Show help message with list of arguments
 ```
 
 ## 🛠️ How It Works
