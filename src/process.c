@@ -8,7 +8,7 @@
 #include <unistd.h>
 
 void fork_process(const char *full_link, const char *channel_dir,
-                  const char *channel_name, FILE *log_file) {
+                  const char *channel_name, const char *log_path) {
   pid_t pid = fork();
   if (pid == -1) {
     perror("process fork_process");
@@ -41,11 +41,12 @@ void fork_process(const char *full_link, const char *channel_dir,
     // Log message
     char msg[LOG_MSG_SIZE];
     if (after > before) {
-      snprintf(msg, sizeof msg, "[NEW] %s: %d video(s) archived.", channel_name, after - before);
+      snprintf(msg, sizeof msg, "[NEW] %s: %d video(s) archived.", channel_name,
+               after - before);
     } else {
       snprintf(msg, sizeof msg, "[---] %s: No changes.", channel_name);
     }
-    log_line(log_file, msg);
+    log_line(log_path, msg);
     _exit(0);
   }
 }
