@@ -1,13 +1,31 @@
 #include "../include/file_system.h"
 #include "../include/config.h"
+#include "../include/log.h"
 #include <asm-generic/errno-base.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/limits.h>
 #include <stdio.h>
-#include <string.h>
+#include <sys/file.h>
 #include <unistd.h>
+
+int lock_file(const char *lock_path, const char *log_path) {
+  // Open lock file for exclusive locking
+  int lock_fd = open(lock_path, O_RDWR);
+  if (lock_fd < 0) {
+    perror("Error opening lock file");
+    return -1;
+  }
+
+  if (flock(lock_fd, LOCK_EX | LOCK_NB) != 0) {
+    printf("ytAuto is already running.\n");
+    log_line(log_path, "[ERR] ytAuto is already in progress, skipping.");
+    close(lock_fd);
+    return -1;
+  }
+  return lock_fd;
+}
 
 int dir_exists(const char *directory, mode_t permissions) {
   struct stat st = {0};
