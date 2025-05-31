@@ -3,6 +3,6 @@
 
 #include <stdio.h>
 
-void log_line(FILE *log_file, const char *line);
+void log_line(const char *log_path, const char *line);
 
 #endif
