@@ -18,9 +18,23 @@ int arg_parser(int argc, char **argv, char **paths) {
 
   if (argc > 1) {
     for (int i = 1; i < argc; i++) {
+      // Help
+      if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0)) {
+        printf("Usage: ytAuto [OPTIONS]\n\n"
+               "Options:\n"
+               "  -l, --list          List all tracked channels\n"
+               "  -a, --append URL    Add a new channel (any yt-dlp supported "
+               "link)\n"
+               "  -r, --remove URL    Remove a channel (exact match required)\n"
+               "  -s, --single URL    Download a single channel and add to "
+               "tracking\n"
+               "      --log           Display latest log entries\n"
+               "  -h, --help          Show this help message\n");
+        return 0;
 
-      // List
-      if ((strcmp(argv[i], "-l") == 0) || (strcmp(argv[i], "--list") == 0)) {
+        // List
+      } else if ((strcmp(argv[i], "-l") == 0) ||
+                 (strcmp(argv[i], "--list") == 0)) {
         if (is_empty(list_path) != 0) {
           return -1;
         }
