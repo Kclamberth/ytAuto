@@ -3,7 +3,13 @@
 #include <stdio.h>
 #include <time.h>
 
-void log_line(FILE *log_file, const char *line) {
+void log_line(const char *log_path, const char *line) {
+  FILE *log_file = fopen(log_path, "a");
+  if (!log_file) {
+    perror("log_line: open log");
+    return;
+  }
+
   // setup time structure
   time_t timestamp = time(NULL);
   struct tm datetime = *localtime(&timestamp);
@@ -15,4 +21,5 @@ void log_line(FILE *log_file, const char *line) {
   fprintf(log_file, "[%s] %s\n", time_output, line);
   funlockfile(log_file);
   fflush(log_file);
+  fclose(log_file);
 }
