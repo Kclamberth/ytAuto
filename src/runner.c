@@ -3,12 +3,11 @@
 #include "../include/config.h"
 #include "../include/file_system.h"
 #include "../include/process.h"
+#include <errno.h>
 #include <linux/limits.h>
-#include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 bool run_channels(const char *youtube_dir, const char *list_path,
                   const char *log_path,
@@ -51,19 +50,44 @@ bool run_channels(const char *youtube_dir, const char *list_path,
   }
 
   // ALL links mode---------------------------
+  long slots = sysconf(_SC_NPROCESSORS_ONLN);
+  if (slots < 1) {
+    slots = 1;
+  }
+  int running = 0;
+
   for (int i = 0; i < entryCount; i++) {
     if (validate_link(entries[i].link) != 0) {
       continue;
     }
 
-    // (Make directory)  & fork
+    // Make channel dir (if needed)
     snprintf(channel_dir, sizeof(channel_dir), "%s/%s", youtube_dir,
              entries[i].dir_name);
     if (dir_exists(channel_dir, DIR_PERMS) != 0) {
+      while (running-- > 0) {
+        wait(NULL);
+      }
+      fclose(log_file);
       return false;
     }
+
+    // Fork process
     fork_process(entries[i].link, channel_dir, entries[i].dir_name, log_file);
+    running++;
+
+    // Block processes >= core count
+    int status;
+    while (running >= slots) {
+      pid_t pid = wait(&status);
+      if (pid > 0) {
+        --running;
+      } else if (pid == -1 && errno == EINTR) {
+        continue;
+      }
+    }
   }
+
   fclose(log_file);
 
   // wait for children to finish
