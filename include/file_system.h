@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+int lock_file(const char *lock_path, const char *log_path);
 int dir_exists(const char *directory, mode_t permissions);
 int file_exists(const char *directory, const char *file, mode_t permissions,
                 char *out);
