@@ -1,5 +1,6 @@
 #include "../include/channel_utils.h"
 #include "../include/file_system.h"
+#include "../include/log.h"
 #include "../include/notify.h"
 #include "../include/runner.h"
 #include <libgen.h>
@@ -49,7 +50,7 @@ int arg_parser(int argc, char **argv, char **paths) {
           return -1;
         }
 
-        if (channel_log(log_path, list_path) != 0) {
+        if (channel_log(log_path) != 0) {
           return -1;
         }
 
@@ -91,13 +92,15 @@ int arg_parser(int argc, char **argv, char **paths) {
             return -1;
           }
 
+          log_line(log_path, "[RUN] ytAuto (single) started.");
           if (run_channels(youtube_dir, list_path, log_path, argv[i + 1]) ==
               false) {
             return -1;
           }
-          notify(list_path, log_path);
-          printf("Finished updating channels.\n");
 
+          log_line(log_path, "[END] ytAuto (single) finished.");
+          notify(list_path, log_path);
+          printf("Finished processing single channel.\n");
           i++;
         } else {
           fprintf(stderr, "Error: Missing argument for '-s' or '--single'.\n");
@@ -117,13 +120,16 @@ int arg_parser(int argc, char **argv, char **paths) {
     if (is_empty(list_path) != 0) {
       return -1;
     }
+
+    log_line(log_path, "[RUN] ytAuto (multi) started.");
     // Use channel list to update channel dirs
     if (run_channels(youtube_dir, list_path, log_path, NULL) == false) {
       return -1;
     }
 
+    log_line(log_path, "[END] ytAuto (multi) finished.");
     notify(list_path, log_path);
-    printf("Finished updating channels.\n");
+    printf("Finished processing all channels.\n");
   }
 
   return 0;
