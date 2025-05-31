@@ -1,6 +1,5 @@
 #include "../include/channel_utils.h"
 #include "../include/config.h"
-#include "../include/file_system.h"
 #include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,38 +61,71 @@ int validate_link(const char *link) {
   return 0;
 }
 
-int channel_log(const char *log_path, const char *list_path) {
+int channel_log(const char *log_path) {
   FILE *log_file = fopen(log_path, "r");
   if (log_file == NULL) {
     perror("Error reading log file\n");
     return -1;
   }
-  int count = count_lines(list_path);
-  char **lines = malloc(sizeof(char *) * count);
+
+  // Temp array to hold most recent RUN block
+  char **lines = NULL;
+  int line_count = 0;
+  int default_cap = 64;
+  lines = malloc(default_cap * sizeof(char *));
   if (!lines) {
     fclose(log_file);
     return -1;
   }
 
+  // Allocate space for lines
   char *buffer = NULL;
   size_t buffer_size;
   ssize_t line_length;
-  int index = 0, total = 0;
+
+  int in_block = 0;
+  // Loop through log file lines
   while ((line_length = getline(&buffer, &buffer_size, log_file)) != -1) {
-    if (total < count) {
-      lines[total++] = strdup(buffer);
-    } else {
-      free(lines[index]);
-      lines[index] = strdup(buffer);
+    // Store only most recent RUN
+    if (strstr(buffer, "[RUN]")) {
+      for (int i = 0; i < line_count; i++)
+        free(lines[i]);
+      line_count = 0;
+      in_block = 1;
     }
-    index = (index + 1) % count;
+
+    // If in a [RUN] block, store the line
+    if (in_block) {
+      // Too many lines, need realloc more mem
+      if (line_count >= default_cap) {
+        default_cap *= 2;
+        char **new_lines = realloc(lines, default_cap * sizeof(char *));
+        if (!new_lines) {
+          perror("Realloc failed");
+          fclose(log_file);
+          free(buffer);
+          for (int i = 0; i < line_count; i++)
+            free(lines[i]);
+          free(lines);
+          return -1;
+        }
+        lines = new_lines;
+      }
+      // Puts line in buffer into the lines array
+      lines[line_count++] = strdup(buffer);
+
+      // Close block if [END] found
+      if (strstr(buffer, "[END]")) {
+        in_block = 0;
+      }
+    }
   }
 
+  // Print out most recent log run
   printf("Last logs:\n");
-  for (int i = 0; i < total; i++) {
-    int position = (index + i) % total;
-    printf("%s", lines[position]);
-    free(lines[position]);
+  for (int i = 0; i < line_count; i++) {
+    printf("%s", lines[i]);
+    free(lines[i]);
   }
 
   free(lines);
