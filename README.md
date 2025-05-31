@@ -26,8 +26,8 @@ This will create a directory structure like:
 
 ```text
 /media/
-├── tvshows
-├── movies
+├── tvshows/
+├── movies/
 └── youtube/ <--------- ytAuto's working directory
     ├── examplechannel/
     ├── anotherchannel/
