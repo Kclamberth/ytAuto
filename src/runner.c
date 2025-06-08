@@ -6,8 +6,20 @@
 #include <errno.h>
 #include <linux/limits.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/wait.h>
+#include <time.h>
 #include <unistd.h>
+
+static void shuffle_channels(ChannelEntry *entries, int entryCount) {
+  srand(time(NULL));
+  for (int i = entryCount - 1; i > 0; i--) {
+    int j = rand() % (i + 1);
+    ChannelEntry temp = entries[i];
+    entries[i] = entries[j];
+    entries[j] = temp;
+  }
+}
 
 bool run_channels(const char *youtube_dir, const char *list_path,
                   const char *log_path,
@@ -47,6 +59,9 @@ bool run_channels(const char *youtube_dir, const char *list_path,
     slots = 1;
   }
   int running = 0;
+
+  // Shuffle channels to ensure fair request distribution
+  shuffle_channels(entries, entryCount);
 
   for (int i = 0; i < entryCount; i++) {
     if (validate_link(entries[i].link) != 0) {
