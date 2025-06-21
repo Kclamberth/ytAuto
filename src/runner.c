@@ -7,6 +7,7 @@
 #include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
@@ -36,21 +37,23 @@ bool run_channels(const char *youtube_dir, const char *list_path,
 
   // Single link mode------------------------
   if (single_link) {
-    if (validate_link(single_link) == 0) {
-      // channels -a (append to CSV first)
-      snprintf(channel_dir, sizeof(channel_dir), "%s/%s", youtube_dir,
-               entries[entryCount - 1].dir_name);
-      if (dir_exists(channel_dir, DIR_PERMS) != 0) {
-        return false;
+    for (int i = 0; i < entryCount; i++) {
+      if (strcmp(entries[i].link, single_link) == 0) {
+        snprintf(channel_dir, sizeof(channel_dir), "%s/%s", youtube_dir,
+                 entries[i].dir_name);
+        if (dir_exists(channel_dir, DIR_PERMS) != 0) {
+          return false;
+        }
+        fork_process(entries[i].link, channel_dir, entries[i].dir_name,
+                     log_path);
+        while (wait(NULL) > 0)
+          ;
+        return true;
       }
-      fork_process(entries[entryCount - 1].link, channel_dir,
-                   entries[entryCount - 1].dir_name, log_path);
     }
-
-    // wait for child to finish
-    while (wait(NULL) > 0)
-      ;
-    return true;
+    printf("Link not found in list: %s\n", single_link);
+    channel_list(list_path, "\nCurrent");
+    return false;
   }
 
   // ALL links mode---------------------------

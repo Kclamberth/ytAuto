@@ -88,7 +88,7 @@ int arg_parser(int argc, char **argv, char **paths) {
       } else if ((strcmp(argv[i], "-s") == 0) ||
                  (strcmp(argv[i], "--single") == 0)) {
         if (i + 1 < argc) {
-          if (channel_add(list_path, argv[i + 1]) != 0) {
+          if (is_empty(list_path) != 0) {
             return -1;
           }
 
