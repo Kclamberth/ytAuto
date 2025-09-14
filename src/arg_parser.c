@@ -7,6 +7,7 @@
 #include <linux/limits.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <wait.h>
@@ -70,17 +71,28 @@ int arg_parser(int argc, char **argv, char **paths) {
         // Remove
       } else if ((strcmp(argv[i], "-r") == 0) ||
                  (strcmp(argv[i], "--remove") == 0)) {
-        if (i + 1 < argc) {
-          if (is_empty(list_path) != 0) {
-            return -1;
-          }
+        if (is_empty(list_path) != 0) {
+          return -1;
+        }
 
-          if (channel_delete(list_path, argv[i + 1]) != 0) {
-            return -1;
-          }
-          i++;
-        } else {
-          fprintf(stderr, "Error: Missing argument for '-r' or '--remove'.\n");
+        channel_list(list_path, "Current");
+        printf("\nEnter the number of the channel to delete: ");
+
+        char line[32];
+        if (!fgets(line, sizeof(line), stdin)) {
+          fprintf(stderr, "Input error.\n");
+          return -1;
+        }
+
+        char *end = NULL;
+        long choice = strtol(line, &end, 10);
+        if (end == line || (*end && *end != '\n') || choice <= 0 ||
+            choice > count_lines(list_path)) {
+          fprintf(stderr, "Invalid number.\n");
+          return -1;
+        }
+
+        if (channel_delete(list_path, (int)choice) != 0) {
           return -1;
         }
 

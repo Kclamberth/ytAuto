@@ -144,9 +144,11 @@ int channel_list(const char *list_path, const char *title) {
   char *buffer = NULL;
   size_t buffer_size;
   ssize_t line_length;
+  int counter = 1;
   printf("%s List of Channels:\n", title);
   while ((line_length = getline(&buffer, &buffer_size, channels_file)) != -1) {
-    printf("%s", buffer);
+    printf("%d) %s", counter, buffer);
+    counter++;
   }
 
   free(buffer);
@@ -230,7 +232,7 @@ int channel_add(const char *list_path, const char *link) {
   return 0;
 }
 
-int channel_delete(const char *list_path, const char *message) {
+int channel_delete(const char *list_path, int channel_to_delete) {
   FILE *channels_file = fopen(list_path, "r");
   if (channels_file == NULL) {
     perror("Error writing to channel file\n");
@@ -251,9 +253,11 @@ int channel_delete(const char *list_path, const char *message) {
   rewind(channels_file);
 
   // read contents of channel file, write to temp file
+  int counter = 1;
   char *buffer = NULL;
   size_t buffer_size;
   ssize_t line_length;
+  int found = 0;
   while ((line_length = getline(&buffer, &buffer_size, channels_file)) != -1) {
     // skip empties
     if (line_length <= 1)
@@ -264,20 +268,26 @@ int channel_delete(const char *list_path, const char *message) {
     }
 
     // if current line DOES NOT equal argument, add to temp file
-    if (strcmp(buffer, message) != 0) {
-      fprintf(temp_file, "%s\n", buffer);
+    if (counter == channel_to_delete) {
+      found = 1;
     } else {
-      continue;
+      fprintf(temp_file, "%s\n", buffer);
     }
+    counter++;
   }
 
+  free(buffer);
   fclose(temp_file);
   fclose(channels_file);
 
+  if (!found) {
+    remove(tmp_list_path);
+    fprintf(stderr, "No channel at index %d.\n", channel_to_delete);
+    return -1;
+  }
+
   // delete original channel file by rename temp to channel file
   rename(tmp_list_path, list_path);
-
-  free(buffer);
-  channel_list(list_path, "Updated");
+  channel_list(list_path, "\nUpdated");
   return 0;
 }
