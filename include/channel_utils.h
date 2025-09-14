@@ -7,7 +7,7 @@ typedef struct {
 } ChannelEntry;
 
 int channel_add(const char *list_path, const char *link);
-int channel_delete(const char *list_path, const char *link);
+int channel_delete(const char *list_path, int channel_to_delete);
 int channel_log(const char *log_path);
 int channel_list(const char *list_path, const char *title);
 int load_channels(const char *list_path, ChannelEntry entries[],
