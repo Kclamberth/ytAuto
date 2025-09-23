@@ -31,7 +31,8 @@ int notify(const char *list_path, const char *log_path) {
                  "-d \"$(cat %s | "
                  "tail -$(cat %s | wc -l) | "
                  "grep NEW | awk -F ' ' '{ $1=\"[\"; print }' | "
-                 "awk '{ sub(\" \", \"\"); print }')\" "
+                 "awk '{ sub(\" \", \"\"); print }' | "
+                 "sed 's/\"/\\\"/g')\" "
                  "%s",
                  log_path, list_path, NTFY_URL) == -1) {
       perror("notify asprintf");
