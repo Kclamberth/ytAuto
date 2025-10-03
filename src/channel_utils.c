@@ -147,7 +147,7 @@ int channel_list(const char *list_path, const char *title) {
   int counter = 1;
   printf("%s List of Channels:\n", title);
   while ((line_length = getline(&buffer, &buffer_size, channels_file)) != -1) {
-    printf("%d) %s", counter, buffer);
+    printf("%02d) %s", counter, buffer);
     counter++;
   }
 
