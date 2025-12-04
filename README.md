@@ -2,7 +2,7 @@
 
 **ytAuto** is a powerful terminal-based C program designed to automate the task of archiving videos, primarily YouTube, using `yt-dlp`. Ideal for running via cron, this tool supports concurrent downloads, change detection, structured directory management, and optional push notifications.
 
-## 🚀 Features
+## Features
 
 - Downloads and archives content from multiple YouTube channels
 - Concurrent processing for fast execution
@@ -12,8 +12,8 @@
 - Compatible with media servers like **Jellyfin**
 - Simple CLI for managing tracked channels
 
-## ⚙️ First-Time Setup
-> 🛑 **Important:** Run the program from the directory where you want your `youtube/` folder to be created.
+## First-Time Setup
+> **Important:** Run the program from the directory where you want your `youtube/` folder to be created.
 
 **Example:**  
 If you want your videos stored in `/media/youtube`, make sure you're inside `/media` the first time you run `ytAuto`:
@@ -35,7 +35,7 @@ This will create a directory structure like:
     └── .channels.log
 ```
 
-## 🧾 Arguments
+## Arguments
 
 ```
 ytAuto                # Updates all channels in parallel
@@ -47,7 +47,7 @@ ytAuto -s URL         # Downloads latest update for single link (Must match chan
 ytAuto --log          # Displays the latest log entries (one per tracked channel)
 ```
 
-## 🛠️ How It Works
+## How It Works
 
 - **Channel Tracking**  
   Channels are tracked via a `channels.list` file inside the `youtube/` directory.
@@ -70,7 +70,7 @@ ytAuto --log          # Displays the latest log entries (one per tracked channel
 - **Notifications (Optional)**  
   If configured, `ytAuto` can send push notifications about new content or no changes using `ntfy`.
 
-## 🔔 Optional ntfy Notifications
+## Optional ntfy Notifications
 
 To receive push notifications, configure the `NTFY_URL` in `config.h`:
 
@@ -78,12 +78,12 @@ To receive push notifications, configure the `NTFY_URL` in `config.h`:
 #define NTFY_URL "https://ntfy.sh/mytopic"
 ```
 
-## 📦 Dependencies
+## Dependencies
 1.) yt-dlp **(REQUIRED)**
 
 2.) ffmpeg **(REQUIRED)**
   
-## 📥 Installation
+## Installation
 To install, clone the repo and run the makefile.
 
 1.) ```git clone https://github.com/Kclamberth/ytAuto && cd ./ytAuto```
