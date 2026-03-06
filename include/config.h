@@ -10,7 +10,7 @@
 #define ARCHIVE_FILE "archive.txt"
 
 // Permissions
-#define DIR_PERMS 0755
+#define DIR_PERMS 2775
 #define FILE_PERMS 0664
 
 // Services
