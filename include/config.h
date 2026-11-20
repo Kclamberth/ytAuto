@@ -5,6 +5,7 @@
 #define YT_SUBDIR "youtube"
 #define TMP_DIR "/tmp"
 #define CHANNELS_FILE ".channels.list"
+#define ROTATION_FILE ".channels.rotation"
 #define LOG_FILE ".channels.log"
 #define LOCK_FILE "ytAuto.lock"
 #define ARCHIVE_FILE "archive.txt"
