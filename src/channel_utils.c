@@ -34,6 +34,13 @@ int load_channels(const char *list_path, ChannelEntry entries[],
     // remove newline from dir_name
     dir_name[strcspn(dir_name, "\r\n")] = '\0';
 
+    if (count >= MAX_ENTRIES) {
+      fprintf(stderr, "Maximum channel count exceeded (%d).\n",
+              MAX_ENTRIES);
+      fclose(channels_file);
+      return -1;
+    }
+
     // load into entries
     strncpy(entries[count].link, link, sizeof(entries[count].link));
     strncpy(entries[count].dir_name, dir_name, sizeof(entries[count].dir_name));
