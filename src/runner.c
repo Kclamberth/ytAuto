@@ -4,22 +4,93 @@
 #include "../include/file_system.h"
 #include "../include/process.h"
 #include <errno.h>
+#include <inttypes.h>
 #include <linux/limits.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
-#include <time.h>
 #include <unistd.h>
 
-static void shuffle_channels(ChannelEntry *entries, int entryCount) {
-  srand(time(NULL));
-  for (int i = entryCount - 1; i > 0; i--) {
-    int j = rand() % (i + 1);
-    ChannelEntry temp = entries[i];
-    entries[i] = entries[j];
-    entries[j] = temp;
+#define GOLDEN_STEP UINT32_C(0x9E3779B9)
+
+static int compare_channels(const void *a, const void *b) {
+  const ChannelEntry *first = a;
+  const ChannelEntry *second = b;
+
+  return strcmp(first->link, second->link);
+}
+
+static int rotation_start(const char *youtube_dir, int count) {
+  char path[PATH_MAX];
+  char tmp[PATH_MAX];
+
+  if (snprintf(path, sizeof(path), "%s/%s",
+               youtube_dir, ROTATION_FILE) >= (int)sizeof(path) ||
+      snprintf(tmp, sizeof(tmp), "%s/%s.XXXXXX",
+               youtube_dir, ROTATION_FILE) >= (int)sizeof(tmp))
+    return -1;
+
+  uint32_t run = 0;
+
+  // Read the persistent run counter.
+  FILE *file = fopen(path, "r");
+  if (file) {
+    char buf[32] = {0};
+    bool valid = fgets(buf, sizeof(buf), file) != NULL;
+    size_t len = strspn(buf, "0123456789");
+
+    valid = valid && len > 0 && len <= 10 &&
+            (buf[len] == '\0' ||
+             (buf[len] == '\n' && buf[len + 1] == '\0')) &&
+            fgetc(file) == EOF;
+
+    uintmax_t value = valid ? strtoumax(buf, NULL, 10) : 0;
+    valid = valid && value <= UINT32_MAX && !ferror(file);
+
+    if (fclose(file) != 0 || !valid)
+      return -1;
+
+    run = (uint32_t)value;
+  } else if (errno != ENOENT) {
+    return -1;
   }
+
+  // Save the next run counter atomically.
+  int fd = mkstemp(tmp);
+
+  if (fd == -1)
+    return -1;
+
+  file = fdopen(fd, "w");
+
+  if (!file) {
+    close(fd);
+    unlink(tmp);
+    return -1;
+  }
+
+  bool ok = fprintf(file, "%" PRIu32 "\n",
+                    (uint32_t)(run + 1u)) > 0;
+
+  if (ok && fflush(file) != 0)
+    ok = false;
+
+  if (ok && fsync(fd) != 0)
+    ok = false;
+
+  if (fclose(file) != 0)
+    ok = false;
+
+  if (!ok || rename(tmp, path) != 0) {
+    unlink(tmp);
+    return -1;
+  }
+
+  // Calculate the golden-ratio starting position.
+  uint32_t phase = (uint32_t)((uint64_t)run * GOLDEN_STEP);
+  return (int)(((uint64_t)phase * (uint64_t)count) >> 32);
 }
 
 bool run_channels(const char *youtube_dir, const char *list_path,
@@ -63,10 +134,27 @@ bool run_channels(const char *youtube_dir, const char *list_path,
   }
   int running = 0;
 
-  // Shuffle channels to ensure fair request distribution
-  shuffle_channels(entries, entryCount);
+  if (entryCount == 0)
+    return true;
 
-  for (int i = 0; i < entryCount; i++) {
+  // Establish a deterministic channel order.
+  qsort(entries, entryCount, sizeof(ChannelEntry),
+        compare_channels);
+
+  // Determine the starting position for this run.
+  int start = rotation_start(youtube_dir, entryCount);
+
+  if (start < 0) {
+    fprintf(stderr, "Error updating channel rotation state.\n");
+    return false;
+  }
+
+  printf("Channel rotation: starting at index %d of %d\n",
+         start, entryCount);
+
+  // Process channels in circular order.
+  for (int offset = 0; offset < entryCount; offset++) {
+    int i = (start + offset) % entryCount;
     if (validate_link(entries[i].link) != 0) {
       continue;
     }
